@@ -1,4 +1,5 @@
 #include "MutexLockTest.h"
+#include "ConditionTest.h"
 #include <iostream>
 
 int main() 

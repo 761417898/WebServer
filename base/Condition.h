@@ -1,7 +1,7 @@
 #ifndef BASE_CONDITION
 #define BASE_CONDITION
 
-#include "noncopyable"
+#include "noncopyable.h"
 #include "MutexLock.h"
 #include <pthread.h>
 #include <errno.h>
@@ -14,7 +14,7 @@ private:
     MutexLock &mutex_;
     pthread_cond_t cond_;
 public:
-    explicit COndition(MutexLock &mutex) : 
+    explicit Condition(MutexLock &mutex) : 
         mutex_(mutex) {
         pthread_cond_init(&cond_, NULL);
     }
@@ -40,7 +40,7 @@ public:
         clock_gettime(CLOCK_REALTIME, &abstime);
         abstime.tv_sec += static_cast<time_t>(seconds);
         //设置了阻塞时间，超时返回ETIMEDOUT
-        return ETIMEDOUT == pthread_cond_timedwait(&cond, mutex.get(), &abstime);
+        return ETIMEDOUT == pthread_cond_timedwait(&cond_, mutex_.get(), &abstime);
     }
 };
 
