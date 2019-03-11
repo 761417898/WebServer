@@ -1,5 +1,5 @@
-#ifndef EVENTLOOP_H
-#define EVENTLOOP_H
+#ifndef NET_EVENTLOOP_H
+#define NET_EVENTLOOP_H
 
 #include "../base/noncopyable.h"
 #include "../base/Thread.h"

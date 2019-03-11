@@ -1,3 +1,9 @@
+/*
+ *  对互斥锁的简单封装,直接mtx.lock mtx.unlock进程操作
+ *设置友元类Condition，以便Condition能拿到实际的互斥锁pthread_mutex_t
+ */
+
+
 #ifndef BASE_MUTEXLOCK_H
 #define BASE_MUTEXLOCK_H
 

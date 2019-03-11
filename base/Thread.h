@@ -1,6 +1,9 @@
 #ifndef BASE_THREAD_H
 #define BASE_THREAD_H
-//封装了线程相关信息
+//对线程的简单封装，包含线程名，ID，要执行的函数，是否开始执行等信息
+//包含一个countDown，Thread在startThread后countDown.wait阻塞，必须要等到
+//紧挨着实际线程要运行的func真正执行 之前的countDown.signal才能继续执行。
+//避免了Thread对象未完成执行线程的任务就析构了
 #include "CountDownLatch.h"
 #include "noncopyable.h"
 #include <pthread.h>

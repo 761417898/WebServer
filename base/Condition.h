@@ -1,3 +1,8 @@
+/*
+ *   对条件变量的简单封装，使用时就cond.wait cond.signal就可以
+ */
+
+
 #ifndef BASE_CONDITION
 #define BASE_CONDITION
 
