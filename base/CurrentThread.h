@@ -5,7 +5,7 @@
 
 namespace GaoServer {
 
-class CurrentThread {
+namespace CurrentThread {
     extern __thread int t_cachedTid;
     extern __thread char t_tidString[32];
     extern __thread int t_tidStringLength;
