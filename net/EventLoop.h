@@ -5,17 +5,24 @@
 #include "../base/Thread.h"
 #include "../base/CurrentThread.h"
 #include <cassert>
+#include <vector>
 #include <poll.h>
+#include <memory>
 
 namespace GaoServer {
 
 class EventLoop : noncopyable {
 private:
 	void abortNotInLoopThread();
+
+    typedef std::vector<Channel*> ChannelList;
     //是否在运行
 	bool looping_;
+    bool quit_;
     //运行所在的线程ID
 	const pid_t threadId_;
+    shared_ptr<Poller> poller_;
+    ChannelList activeChannels_;
 public:
 	EventLoop();
 	~EventLoop();

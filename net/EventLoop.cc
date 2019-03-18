@@ -29,11 +29,29 @@ void EventLoop::loop() {
 	assert(!looping_);
 	assertInLoopThread();
 	looping_ = true;
+    quit_ = false;
 
-	::poll(NULL, 0, 5*1000);
-
+    while (!quit_) {
+        activeChannels_.clear();
+        poller_->poll(kPollTimeMs, &activeChannels_);
+        for (ChannelList::iteartor it = activeChannels_.begin();
+            it != activeChannels_.end(); ++it) {
+                (*it)->handleEvent();
+        }
+    }
 	//LOG_TRACE << "EventLoop " << this << " stop looping";
 	looping_ = false;
+}
+
+void EventLoop::quit() {
+    quit_ = true;
+    //wakeup
+}
+
+void EventLoop::updateChannel(Channel* channel) {
+    assert(channel->ownerloop() == this);
+    assertInLoopThread();
+    poller_->updateChannel(channel);
 }
 
 }
