@@ -14,7 +14,7 @@
 
 namespace GaoServer {
 
-class Thread : noncopyable {
+class Thread {
 public:
 	typedef std::function<void ()> ThreadFunc;
 private:

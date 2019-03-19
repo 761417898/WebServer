@@ -9,7 +9,7 @@
 
 namespace GaoServer {
 
-class CountDownLatch : noncopyable {
+class CountDownLatch {
 private:
 	//const 函数中可以改变的属性
 	mutable MutexLock mutex_;

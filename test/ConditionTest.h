@@ -4,24 +4,25 @@
 
 namespace GaoServer {
 
-    static Condition cond;
-    static MutexLock mtx;
+    MutexLock mtxConditionTest;
+    Condition condConditionTest(mtxConditionTest);
 
-    static int count = 0;
+    int countConditionTest = 0;
 
-    static void* func(void*) {
-        mtx.lock();
-        cond.wait();
-        count++;
-        mtx.unlock();
+    void* funcConditionTest(void*) {
+        mtxConditionTest.lock();
+        condConditionTest.wait();
+        mtxConditionTest.unlock();
     }
 
-    static testWaitSignal() {
-        mtx.lock();
-        cond.signal();
-        mtx.unlock();
+    void testWaitSignal() {
+        pthread_t tid;
+        pthread_create(&tid, NULL, funcConditionTest, NULL);
         sleep(1);
-        assert(count == 1);
+        mtxConditionTest.lock();
+        condConditionTest.notify();
+        mtxConditionTest.unlock();
+        pthread_join(tid, NULL);
     }
 
     void testConditionAllCases() {

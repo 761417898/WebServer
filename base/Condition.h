@@ -14,7 +14,7 @@
 
 namespace GaoServer {
 
-class Condition : noncopyable {
+class Condition {
 private:
     MutexLock &mutex_;
     pthread_cond_t cond_;

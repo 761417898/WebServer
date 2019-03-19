@@ -13,7 +13,7 @@
 
 namespace GaoServer {
 
-class MutexLock : noncopyable {
+class MutexLock {
 public:
     MutexLock() {
         pthread_mutex_init(&mutex_, NULL);
@@ -37,7 +37,7 @@ private:
     friend class Condition;
 };
 
-class MutexLockGuard : noncopyable {
+class MutexLockGuard {
 private:
 	MutexLock &mutex_;
 public:
@@ -48,7 +48,7 @@ public:
 	~MutexLockGuard() {
 		mutex_.unlock();
 	}
-}
+};
 
 }
 
