@@ -10,6 +10,7 @@
 #define NET_CHANNEL_H
 
 #include <functional.h>
+#include <memory>
 
 namespace GaoServer {
 
@@ -58,13 +59,6 @@ public:
 		update();
 	}
 
-	//for poller
-	int index() {
-		return index_;
-	}
-	void setIndex(int index) {
-		index_ = index;
-	}
 	EventLoop *ownerLoop() {
 		return loop_;
 	}
@@ -86,6 +80,8 @@ private:
 	EventCallBack writeCallBack_;
 	EventCallBack errorCallBack_;
 };
+
+typedef std::shared_ptr<Channel> ChannelP;
 
 }
 

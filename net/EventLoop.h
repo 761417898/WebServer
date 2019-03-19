@@ -4,6 +4,7 @@
 #include "../base/noncopyable.h"
 #include "../base/Thread.h"
 #include "../base/CurrentThread.h"
+#include "EPoller.h"
 #include <cassert>
 #include <vector>
 #include <poll.h>
@@ -21,7 +22,7 @@ private:
     bool quit_;
     //运行所在的线程ID
 	const pid_t threadId_;
-    shared_ptr<Poller> poller_;
+    shared_ptr<EPoller> poller_;
     ChannelList activeChannels_;
 public:
 	EventLoop();
