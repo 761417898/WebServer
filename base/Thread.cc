@@ -2,8 +2,9 @@
 #include "CurrentThread.h"
 #include <cstdio>
 #include <cassert>
+#include <sys/prctl.h>
 
-namespace GaoSetver {
+namespace GaoServer {
 	
 	namespace CurrentThread {
 		__thread int t_cachedTid = 0;
@@ -16,7 +17,7 @@ namespace GaoSetver {
 		return static_cast<pid_t>(::syscall(SYS_gettid));
 	}
 
-	void CurrentThread::cacheTid() {
+	void CurrentThread::cachedTid() {
 		if (0 == t_cachedTid) {
 			t_cachedTid = gettid();
 			t_tidStringLength = snprintf(t_tidString, sizeof(t_tidString), "%5d ", t_cachedTid);
@@ -26,10 +27,10 @@ namespace GaoSetver {
 	struct ThreadData {
 		typedef Thread::ThreadFunc ThreadFunc;
 		ThreadFunc func_;
-		string name_;
+        std::string name_;
 		pid_t* tid_;
 		CountDownLatch* latch_;
-		ThreadData(const ThreadFunc &func, const string& name, pid_t *tid, CountDownLatch *latch) : 
+        ThreadData(const ThreadFunc &func, const std::string& name, pid_t *tid, CountDownLatch *latch) : 
 			func_(func), name_(name), tid_(tid), latch_(latch) {}
 
 		void runInThread() {
@@ -37,7 +38,7 @@ namespace GaoSetver {
 			tid_ = NULL;
 			latch_->countDown();
 			latch_ = NULL;
-			CurrentThread::t_threadName = name_empty() ? "Thread" : name_.c_str();
+			CurrentThread::t_threadName = name_.empty() ? "Thread" : name_.c_str();
 			//Ïß³ÌÃüÃû
 			prctl(PR_SET_NAME, CurrentThread::t_threadName);
 			func_();
@@ -92,6 +93,6 @@ namespace GaoSetver {
 		assert(started_);
 		assert(!joined_);
 		joined_ = true;
-		return pthrad_join(pthreadId_, NULL);
+		return pthread_join(pthreadId_, NULL);
 	}
 }

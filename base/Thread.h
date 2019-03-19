@@ -6,6 +6,7 @@
 //避免了Thread对象未完成执行线程的任务就析构了
 #include "CountDownLatch.h"
 #include "noncopyable.h"
+#include "CurrentThread.h"
 #include <pthread.h>
 #include <functional>
 #include <string>
@@ -23,7 +24,7 @@ private:
 	bool joined_;
 	//这两个线程ID不是一回事，pthreadId是pthread_create创建返回的
 	//tid才是真正的线程ID（用于表示task_struct，可通过syscall(SYS_gettid)获取）
-	pthread_t pthreadID_;
+	pthread_t pthreadId_;
 	pid_t tid_;
 	ThreadFunc	func_;
 	std::string name_;

@@ -33,8 +33,7 @@ namespace CurrentThread {
     }
 
 
-};
-
+}
 }
 
 #endif // BASE_CURRENTTHREAD_H
