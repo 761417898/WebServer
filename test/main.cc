@@ -1,5 +1,8 @@
 #include "MutexLockTest.h"
 #include "ConditionTest.h"
+#include "CountDownLatchTest.h"
+#include "ThreadTest.h"
+#include "ReactorTest.h"
 #include <iostream>
 
 int main() 
@@ -8,4 +11,7 @@ int main()
     std::cout << " **********   UNITTEST   *************\n";
     testMutexLockAllCases();
     testConditionAllCases();
+    testCountDownLatchAllCases();
+    testThreadAllCases();
+    testReactorAllCases();
 }

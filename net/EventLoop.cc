@@ -1,5 +1,6 @@
 #include "EventLoop.h"
 #include <cassert>
+#include <cstdio>
 //#include "base/Logging.h"
 
 namespace GaoServer {
@@ -14,6 +15,7 @@ EventLoop::EventLoop() :
 	} else {
 		t_loopInThisThread = this;
 	}
+    poller_ = std::make_shared<EPoller>(this);
 }
 
 EventLoop::~EventLoop() {
@@ -21,7 +23,7 @@ EventLoop::~EventLoop() {
 	t_loopInThisThread = NULL;
 }
 
-EventLoop* EventThread::getEventLoopOfCurrentThread() {
+EventLoop* EventLoop::getEventLoopOfCurrentThread() {
 	return t_loopInThisThread;
 }
 
@@ -34,7 +36,7 @@ void EventLoop::loop() {
     while (!quit_) {
         activeChannels_.clear();
         activeChannels_ = poller_->poll();
-        for (ChannelList::iteartor it = activeChannels_.begin();
+        for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
                 (*it)->handleEvent();
         }
@@ -48,10 +50,14 @@ void EventLoop::quit() {
     //wakeup
 }
 
-void EventLoop::updateChannel(Channel* channel) {
-    assert(channel->ownerloop() == this);
+void EventLoop::updateChannel(ChannelP channel) {
+    assert(channel->ownerLoop() == this);
     assertInLoopThread();
     poller_->updateChannel(channel);
+}
+
+void EventLoop::deleteChannel(ChannelP channel) {
+    poller_->epollDel(channel);
 }
 
 }

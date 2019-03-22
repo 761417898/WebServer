@@ -18,7 +18,7 @@ namespace GaoServer {
     static void testLockUnlock() {
         pthread_t tid;
         assert(pthread_create(&tid, NULL, func, NULL) != -1);
-        sleep(1);
+        usleep(100);
         mtx.lock();
         assert(count == 1);
         mtx.unlock();

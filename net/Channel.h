@@ -9,8 +9,9 @@
 #ifndef NET_CHANNEL_H
 #define NET_CHANNEL_H
 
-#include <functional.h>
+#include <functional>
 #include <memory>
+#include <poll.h>
 
 namespace GaoServer {
 
@@ -18,8 +19,13 @@ class EventLoop;
 
 class Channel {
 public:
-	typedef function<void ()> EventCallBack;
+    typedef std::function<void ()> EventCallBack;
 	Channel(EventLoop* loop, int fd);
+
+    ~Channel() {
+//        deleteChannel();
+    }
+
 	void handleEvent();
 	void setReadCallBack(const EventCallBack &cb) {
 		readCallBack_ = cb;
@@ -50,6 +56,12 @@ public:
 		events_ |= kWriteEvent;
 		update();
 	}
+
+    void disableReading() {
+        events_ &= ~kReadEvent;
+        update();
+    }
+
 	void disableWriting() {
 		events_ &= ~kWriteEvent;
 		update();
@@ -63,8 +75,9 @@ public:
 		return loop_;
 	}
 private:
-	void update();
-	
+    void update();
+    void deleteChannel();
+
 	static const int kNoneEvent;
 	static const int kReadEvent;
 	static const int kWriteEvent;
@@ -74,7 +87,6 @@ private:
 	int events_;
     //回传的事件
 	int revents_;
-	int index_;
 
 	EventCallBack readCallBack_;
 	EventCallBack writeCallBack_;

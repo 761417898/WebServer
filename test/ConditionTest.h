@@ -18,7 +18,7 @@ namespace GaoServer {
     void testWaitSignal() {
         pthread_t tid;
         pthread_create(&tid, NULL, funcConditionTest, NULL);
-        sleep(1);
+        usleep(100);
         mtxConditionTest.lock();
         condConditionTest.notify();
         mtxConditionTest.unlock();

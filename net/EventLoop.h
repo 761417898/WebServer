@@ -5,6 +5,7 @@
 #include "../base/Thread.h"
 #include "../base/CurrentThread.h"
 #include "EPoller.h"
+#include "Channel.h"
 #include <cassert>
 #include <vector>
 #include <poll.h>
@@ -14,21 +15,27 @@ namespace GaoServer {
 
 class EventLoop : noncopyable {
 private:
-	void abortNotInLoopThread();
 
-    typedef std::vector<Channel*> ChannelList;
+    typedef std::vector<ChannelP> ChannelList;
     //是否在运行
 	bool looping_;
     bool quit_;
     //运行所在的线程ID
 	const pid_t threadId_;
-    shared_ptr<EPoller> poller_;
+    std::shared_ptr<EPoller> poller_;
     ChannelList activeChannels_;
+
+    void abortNotInLoopThread() {
+    //
+    }
+
 public:
 	EventLoop();
 	~EventLoop();
+
+    void loop();
 	
-	void loop();
+	void quit();
     //检测是否在当前进程运行，CurrentThread宏定义在../base/CurrentThread.h
 	bool isInLoopThread() const {
 		return threadId_ == CurrentThread::tid();
@@ -39,7 +46,15 @@ public:
 		}
 	}
 
+    void updateChannel(ChannelP channel);
+
+    void deleteChannel(ChannelP channel);
+
 	EventLoop* getEventLoopOfCurrentThread();
+
+    void setPoller(std::shared_ptr<EPoller> poller) {
+        poller_ = poller;
+    }
 
 };
 

@@ -15,7 +15,7 @@ namespace GaoServer {
     void testCountDownLatchWaitNotify() {
         pthread_t tid;
         pthread_create(&tid, NULL, funcCountDownLatch, NULL);
-        sleep(1);
+        usleep(100);
         cdlCountDownLatchTest.countDown();
         pthread_join(tid, NULL);
     }
