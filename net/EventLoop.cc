@@ -15,7 +15,7 @@ EventLoop::EventLoop() :
 	} else {
 		t_loopInThisThread = this;
 	}
-    poller_ = std::make_shared<EPoller>(this);
+    poller_ = std::make_shared<EPoller>();
 }
 
 EventLoop::~EventLoop() {
@@ -35,7 +35,7 @@ void EventLoop::loop() {
 
     while (!quit_) {
         activeChannels_.clear();
-        activeChannels_ = poller_->poll();
+        poller_->poll(activeChannels_);
         for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
                 (*it)->handleEvent();
@@ -50,13 +50,18 @@ void EventLoop::quit() {
     //wakeup
 }
 
-void EventLoop::updateChannel(ChannelP channel) {
-    assert(channel->ownerLoop() == this);
+void EventLoop::addChannel(Channel* channel) {
     assertInLoopThread();
-    poller_->updateChannel(channel);
+    poller_->epollAdd(channel);
 }
 
-void EventLoop::deleteChannel(ChannelP channel) {
+void EventLoop::modChannel(Channel* channel) {
+    assertInLoopThread();
+    poller_->epollMod(channel);
+}
+
+void EventLoop::delChannel(Channel* channel) {
+    assertInLoopThread();
     poller_->epollDel(channel);
 }
 

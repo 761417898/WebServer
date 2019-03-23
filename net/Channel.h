@@ -15,16 +15,10 @@
 
 namespace GaoServer {
 
-class EventLoop;
-
 class Channel {
 public:
     typedef std::function<void ()> EventCallBack;
-	Channel(EventLoop* loop, int fd);
-
-    ~Channel() {
-//        deleteChannel();
-    }
+	Channel();
 
 	void handleEvent();
 	void setReadCallBack(const EventCallBack &cb) {
@@ -39,6 +33,9 @@ public:
 	int fd() const {
 		return fd_;
 	}
+    void setFd(int fd) {
+        fd_ = fd;
+    }
 	int events() const {
 		return events_;
 	}
@@ -50,40 +47,36 @@ public:
 	}
 	void enableReading() {
 		events_ |= kReadEvent;
-		update();
+	//	update();
 	}
 	void enableWriting() {
 		events_ |= kWriteEvent;
-		update();
+	//	update();
 	}
 
     void disableReading() {
         events_ &= ~kReadEvent;
-        update();
+    //    update();
     }
 
 	void disableWriting() {
 		events_ &= ~kWriteEvent;
-		update();
+	//	update();
 	}
 	void disableAll() {
 		events_ = kNoneEvent;
-		update();
+	//	update();
 	}
 
-	EventLoop *ownerLoop() {
-		return loop_;
-	}
 private:
-    void update();
-    void deleteChannel();
+    //void update();
+    //void deleteChannel();
 
 	static const int kNoneEvent;
 	static const int kReadEvent;
 	static const int kWriteEvent;
 
-	EventLoop *loop_;
-	const int fd_;
+	int fd_;
 	int events_;
     //回传的事件
 	int revents_;
@@ -92,8 +85,6 @@ private:
 	EventCallBack writeCallBack_;
 	EventCallBack errorCallBack_;
 };
-
-typedef std::shared_ptr<Channel> ChannelP;
 
 }
 

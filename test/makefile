@@ -15,7 +15,6 @@ Channel.o:
 
 EPoller.o:
 	g++ -g -W -c -o EPoller.o ../net/EPoller.cc -lpthread
-
 EventLoop.o:
 	g++ -g -W -c -o EventLoop.o ../net/EventLoop.cc -lpthread
 

@@ -16,7 +16,7 @@ namespace GaoServer {
 class EventLoop : noncopyable {
 private:
 
-    typedef std::vector<ChannelP> ChannelList;
+    typedef std::vector<Channel*> ChannelList;
     //是否在运行
 	bool looping_;
     bool quit_;
@@ -46,9 +46,11 @@ public:
 		}
 	}
 
-    void updateChannel(ChannelP channel);
+    void modChannel(Channel* channel);
 
-    void deleteChannel(ChannelP channel);
+    void addChannel(Channel* channel);
+
+    void delChannel(Channel* channel);
 
 	EventLoop* getEventLoopOfCurrentThread();
 
