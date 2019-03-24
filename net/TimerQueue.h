@@ -7,8 +7,16 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 #include <functional>
+#include <vector>
+#include <ctime>
 
 namespace GaoServer {
+
+bool operator<(const timespec& a, const timespec& b) {
+    if (a.tv_sec == b.tv_sec)
+        return a.tv_nsec < b.tv_nsec;
+    return a.tv_sec < b.tv_sec;
+}
 
 class TimerQueue {
 
@@ -19,10 +27,10 @@ public:
     TimerQueue();
     ~TimerQueue();
 
-    void addTimer(TimerCallBack cb, int time);
+    void addTimer(TimerCallBack cb, timespec time);
 
 private:
-    typedef std::pair<int, Timer*> Entry;
+    typedef std::pair<timespec, Timer*> Entry;
     typedef std::set<Entry> TimerList;
 
     int timerFd_;
@@ -30,8 +38,11 @@ private:
     TimerList timers_;
 
     int createTimerFd();
-    static void readTimerFd();
-    static void handleRead();
+    void readTimerFd();
+    void handleRead();
+    std::vector<Entry> getExpired();
+
+    void resetTime(timespec time);
 };
 
 }

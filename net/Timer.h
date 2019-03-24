@@ -9,12 +9,14 @@ class Timer {
 
 private:
     typedef std::function<void ()> TimerCallBack;
-
-public:
-
-
     TimerCallBack cb_;
 
+public:
+    Timer(TimerCallBack cb) : cb_(cb) {}
+
+    void run() {
+        cb_();
+    }
 };
 
 }

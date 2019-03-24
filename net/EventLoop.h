@@ -12,6 +12,7 @@
 #include <poll.h>
 #include <memory>
 #include <functional>
+#include <ctime>
 
 namespace GaoServer {
 
@@ -28,7 +29,7 @@ private:
     std::shared_ptr<EPoller> poller_;
     ChannelList activeChannels_;
 
-
+    TimerQueue timerQueue_;
 
     void abortNotInLoopThread() {
     //
@@ -56,8 +57,8 @@ public:
     void addChannel(Channel* channel);
 
     void delChannel(Channel* channel);
-
-    void addTimer(TimerCallBack cb, int time);
+    //run after
+    void addTimer(TimerCallBack cb, timespec time);
 
 	EventLoop* getEventLoopOfCurrentThread();
 

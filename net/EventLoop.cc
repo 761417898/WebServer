@@ -65,8 +65,9 @@ void EventLoop::delChannel(Channel* channel) {
     poller_->epollDel(channel);
 }
 
-void EventLoop::addTimer(TimerCallBack cb, int time) {
-
+void EventLoop::addTimer(TimerCallBack cb, timespec time) {
+    assertInLoopThread();
+    timerQueue_.addTimer(cb, time);
 }
 
 }
