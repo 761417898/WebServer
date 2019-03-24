@@ -6,10 +6,12 @@
 #include "../base/CurrentThread.h"
 #include "EPoller.h"
 #include "Channel.h"
+#include "TimerQueue.h"
 #include <cassert>
 #include <vector>
 #include <poll.h>
 #include <memory>
+#include <functional>
 
 namespace GaoServer {
 
@@ -17,6 +19,7 @@ class EventLoop : noncopyable {
 private:
 
     typedef std::vector<Channel*> ChannelList;
+    typedef std::function<void ()> TimerCallBack;
     //是否在运行
 	bool looping_;
     bool quit_;
@@ -24,6 +27,8 @@ private:
 	const pid_t threadId_;
     std::shared_ptr<EPoller> poller_;
     ChannelList activeChannels_;
+
+
 
     void abortNotInLoopThread() {
     //
@@ -51,6 +56,8 @@ public:
     void addChannel(Channel* channel);
 
     void delChannel(Channel* channel);
+
+    void addTimer(TimerCallBack cb, int time);
 
 	EventLoop* getEventLoopOfCurrentThread();
 
