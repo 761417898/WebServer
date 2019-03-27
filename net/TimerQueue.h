@@ -1,8 +1,8 @@
 #ifndef NET_TIMERQUEUE_H
 #define NET_TIMERQUEUE_H
 
-#include "Channel.h"
 #include "Timer.h"
+#include "Channel.h"
 #include <set>
 #include <sys/timerfd.h>
 #include <unistd.h>
@@ -11,12 +11,6 @@
 #include <ctime>
 
 namespace GaoServer {
-
-bool operator<(const timespec& a, const timespec& b) {
-    if (a.tv_sec == b.tv_sec)
-        return a.tv_nsec < b.tv_nsec;
-    return a.tv_sec < b.tv_sec;
-}
 
 class TimerQueue {
 
@@ -43,6 +37,7 @@ private:
     std::vector<Entry> getExpired();
 
     void resetTime(timespec time);
+    friend class EventLoop;
 };
 
 }

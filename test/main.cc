@@ -3,6 +3,7 @@
 #include "CountDownLatchTest.h"
 #include "ThreadTest.h"
 #include "ReactorTest.h"
+#include <pthread.h>
 #include <iostream>
 
 int main() 

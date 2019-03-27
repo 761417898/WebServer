@@ -1,12 +1,28 @@
 #include "TimerQueue.h"
+#include "Channel.h"
+#include <cstdio>
 
 namespace GaoServer {
+
+bool operator<(const timespec& a, const timespec& b) {
+    if (a.tv_sec == b.tv_sec)
+        return a.tv_nsec < b.tv_nsec;
+    return a.tv_sec < b.tv_sec;
+}
+
+bool operator<(const std::pair<timespec, Timer*>& e1, const std::pair<timespec, Timer*>& e2) {
+    return e1.first < e2.first;
+}
 
 TimerQueue::TimerQueue() : timerFd_(createTimerFd()), timerChannel(),
         timers_() {
     timerChannel.setFd(timerFd_);
     timerChannel.setReadCallBack(std::bind(&TimerQueue::handleRead, this));
     timerChannel.enableReading();
+}
+
+TimerQueue::~TimerQueue() {
+    ::close(timerFd_);
 }
 
 void TimerQueue::readTimerFd() {
@@ -58,7 +74,10 @@ int TimerQueue::createTimerFd() {
 void TimerQueue::resetTime(timespec time) {
     struct itimerspec new_value;
     new_value.it_value.tv_sec = time.tv_sec; //第一次到期的时间
-    new_value.it_value.tv_nsec = time.tv_nsec;
+    new_value.it_value.tv_nsec = 0;
+    new_value.it_interval.tv_sec = 0;
+    new_value.it_interval.tv_nsec = 0;
+    printf("timerfd %d, after %d s\n", timerFd_, time.tv_sec);
     timerfd_settime(timerFd_, 0, &new_value, NULL);
 }
 
@@ -77,7 +96,8 @@ void TimerQueue::addTimer(TimerCallBack cb, timespec time) {
         timespec tim, now;
         clock_gettime(CLOCK_REALTIME, &now);
         if (time < now) {
-            //LOG << ...
+            //LOG << error...
+            //printf("e")
         }
         tim.tv_sec = time.tv_sec - now.tv_sec;
         tim.tv_nsec = time.tv_nsec - now.tv_nsec;

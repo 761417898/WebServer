@@ -29,7 +29,7 @@ private:
     std::shared_ptr<EPoller> poller_;
     ChannelList activeChannels_;
 
-    TimerQueue timerQueue_;
+    std::shared_ptr<TimerQueue> timerQueue_;
 
     void abortNotInLoopThread() {
     //

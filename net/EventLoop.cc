@@ -1,6 +1,8 @@
 #include "EventLoop.h"
+#include "TimerQueue.h"
 #include <cassert>
 #include <cstdio>
+#include <pthread.h>
 //#include "base/Logging.h"
 
 namespace GaoServer {
@@ -8,14 +10,16 @@ namespace GaoServer {
 __thread EventLoop* t_loopInThisThread = NULL;
 
 EventLoop::EventLoop() :
-	looping_(false), threadId_(CurrentThread::tid()) {
+    looping_(false), threadId_(CurrentThread::tid()) {
 	//LOG_TRACE << "EventLoop create " << this << " in thread " << threadId_;
 	if (t_loopInThisThread) {
 		//LOG_FATAL
 	} else {
 		t_loopInThisThread = this;
 	}
+    timerQueue_ = std::make_shared<TimerQueue>();
     poller_ = std::make_shared<EPoller>();
+    addChannel(&(timerQueue_->timerChannel));
 }
 
 EventLoop::~EventLoop() {
@@ -39,6 +43,7 @@ void EventLoop::loop() {
         for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
                 (*it)->handleEvent();
+            printf("%d fd is actived\n", (*it)->fd());
         }
     }
 	//LOG_TRACE << "EventLoop " << this << " stop looping";
@@ -52,6 +57,7 @@ void EventLoop::quit() {
 
 void EventLoop::addChannel(Channel* channel) {
     assertInLoopThread();
+    printf("fd %d added\n", channel->fd());
     poller_->epollAdd(channel);
 }
 
@@ -67,7 +73,7 @@ void EventLoop::delChannel(Channel* channel) {
 
 void EventLoop::addTimer(TimerCallBack cb, timespec time) {
     assertInLoopThread();
-    timerQueue_.addTimer(cb, time);
+    timerQueue_->addTimer(cb, time);
 }
 
 }

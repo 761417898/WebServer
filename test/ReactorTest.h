@@ -7,6 +7,7 @@
 #include "../base/Thread.h"
 #include <cassert>
 #include <cstdio>
+#include <ctime>
 #include <pthread.h>
 
 namespace GaoServer {
@@ -53,7 +54,12 @@ namespace GaoServer {
         mainLoop->quit();
     }
 
+    static void callBackTimerTest() {
+        printf("This is callBackTimerTest, ok\n");
+    }
+
     void testReactor() {
+
         int testFd = 1;
         Channel chan;
         Channel *channel = &chan;
@@ -62,8 +68,30 @@ namespace GaoServer {
         channel->setReadCallBack(callBackReactorTest);
 
         EventLoop mainLoop;
+        //test ChannelLoop
         mainLoop.addChannel(channel);
+        //test TimerEvent
+        timespec now;
+        clock_gettime(CLOCK_REALTIME, &now);
+        now.tv_sec += 5;
+        mainLoop.addTimer(callBackTimerTest, now);
+        now.tv_sec -= 2;
+        mainLoop.addTimer(callBackTimerTest, now);
 
+      /*  itimerspec new_value;
+        new_value.it_value.tv_sec = 5; //第一次到期的时间
+        new_value.it_value.tv_nsec = 0;
+        new_value.it_interval.tv_sec = 0;
+        new_value.it_interval.tv_nsec = 0;
+        int timefd = timerfd_create(CLOCK_REALTIME, TFD_NONBLOCK);
+        timerfd_settime(timefd, 0, &new_value, NULL);
+        Channel *timerEvent = new Channel();
+        timerEvent->setFd(timefd);
+        timerEvent->enableReading();
+        timerEvent->setReadCallBack(callBackTimerTest);
+        mainLoop.addChannel(timerEvent);
+
+*/
         // to close loop
         pthread_t tid;
         pthread_create(&tid, NULL, closeMainLoop, (void*)&mainLoop);
