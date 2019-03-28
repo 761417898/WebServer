@@ -26,5 +26,21 @@ InetAddress::InetAddress(const std::string ip, uint16_t port, bool ipv6) {
 
 }
 
+void InetAddress::toIp(char *buf, size_t size) const {
+    ::inet_ntop(AF_INET, (void*)&addr_.sin_addr, buf, static_cast<socklen_t>(size));
+}
+
+void InetAddress::toIpv6(char *buf, size_t size) const {
+    ::inet_ntop(AF_INET6, (void*)&addr6_.sin6_addr, buf, static_cast<socklen_t>(size));
+}
+
+int InetAddress::toPort() const {
+    return ntohs(addr_.sin_port);
+}
+
+int InetAddress::toPortIpv6() const {
+    return ntohs(addr6_.sin6_port);
+}
+
 }
 

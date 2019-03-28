@@ -1,5 +1,5 @@
-unittest: main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o
-	g++ -g -W -o unittest main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o -lpthread
+unittest: main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o
+	g++ -g -W -o unittest main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o -lpthread
 
 main.o: main.cc
 	g++ -g -W -c -o main.o main.cc -lpthread
@@ -21,6 +21,15 @@ EventLoop.o:
 
 TimerQueue.o:
 	g++ -g -W -c -o TimerQueue.o ../net/TimerQueue.cc -lpthread
+
+Socket.o:
+	g++ -g -W -c -o Socket.o ../net/Socket.cc
+
+InetAddress.o:
+	g++ -g -W -c -o InetAddress.o ../net/InetAddress.cc
+
+Acceptor.o:
+	g++ -g -W -c -o Acceptor.o ../net/Acceptor.cc
 
 clean:
 	rm *.o

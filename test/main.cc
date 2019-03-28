@@ -3,6 +3,7 @@
 #include "CountDownLatchTest.h"
 #include "ThreadTest.h"
 #include "ReactorTest.h"
+#include "AcceptorTest.h"
 #include <pthread.h>
 #include <iostream>
 
@@ -15,4 +16,5 @@ int main()
     testCountDownLatchAllCases();
     testThreadAllCases();
     testReactorAllCases();
+    testAcceptorAllCases();
 }

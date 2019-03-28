@@ -26,9 +26,27 @@ public:
         addr6_ = addr6;
     }
 
-    const struct sockaddr* getSockAddr() const {
-        return (const struct sockaddr*)&addr6_;
+    void setSockAddrInet(sockaddr_in addr) {
+        addr_ = addr;
     }
+
+    const struct sockaddr* getSockAddr() const {
+        return (const struct sockaddr*)&addr_;
+    }
+
+    const struct sockaddr_in6* getSockAddrIn6() const {
+        return &addr6_;
+    }
+
+    const struct sockaddr_in* getSockAddrIn() const {
+        return &addr_;
+    }
+
+    void toIp(char* buf, size_t size) const;
+    void toIpv6(char *buf, size_t size) const;
+
+    int toPort() const;
+    int toPortIpv6() const;
 
 private:
     union {

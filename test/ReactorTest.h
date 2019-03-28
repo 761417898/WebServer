@@ -49,7 +49,7 @@ namespace GaoServer {
     static void* closeMainLoop(void* arg) {
         EventLoop *mainLoop = static_cast<EventLoop*>(arg);
         printf("waitting mainLoop quited thread\n");
-        sleep(15);
+        sleep(6);
         printf("mainLoop quited\n");
         mainLoop->quit();
     }

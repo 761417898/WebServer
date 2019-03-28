@@ -5,11 +5,12 @@
 #include <cstring>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <cstdio>
 
 namespace GaoServer {
 
 Socket::Socket() : sockfd_(::socket(AF_INET, SOCK_STREAM |
-                                    SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP)){
+                                    SOCK_NONBLOCK | SOCK_CLOEXEC, 0)){
 }
 
 Socket::~Socket() {
@@ -25,20 +26,26 @@ bool Socket::getTcpInfo(struct tcp_info* tcpi) const
 
 void Socket::bindAddress(const InetAddress& localaddr) {
     auto addr = localaddr.getSockAddr();
-    ::bind(sockfd_, addr, sizeof (addr));
+    ::bind(sockfd_, addr, sizeof (sockaddr));
+
+    char buf[100];
+    localaddr.toIp(buf, sizeof (buf));
+    printf("%d fd, bind IP %s, Port %d\n", sockfd_, buf, localaddr.toPortIpv6());
 }
 
 void Socket::listen() {
-    ::listen(sockfd_, SOMAXCONN);
+    int ret = ::listen(sockfd_, SOMAXCONN);
+    printf("listen return %d, %d fd listen\n", ret, sockfd_);
 }
 
 int Socket::accept(InetAddress *peeraddr) {
-    struct sockaddr_in6 addr;
+    struct sockaddr_in addr;
     ::memset(&addr, 0, sizeof (addr));
     socklen_t addrlen = static_cast<socklen_t>(sizeof addr);
+    printf("%d fd accept\n", sockfd_);
     int connectFd = ::accept(sockfd_, (sockaddr*)&addr, &addrlen);
-
-    peeraddr->setSockAddrInet6(addr);
+    printf("accepted a new connect fd %d\n", connectFd);
+    peeraddr->setSockAddrInet(addr);
 
     ::fcntl(connectFd,F_SETFL,::fcntl(connectFd, F_GETFL)|O_NONBLOCK|FD_CLOEXEC);
     return connectFd;

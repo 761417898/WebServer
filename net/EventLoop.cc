@@ -43,7 +43,7 @@ void EventLoop::loop() {
         for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
                 (*it)->handleEvent();
-            printf("%d fd is actived\n", (*it)->fd());
+            printf("\n%d fd is actived\n", (*it)->fd());
         }
     }
 	//LOG_TRACE << "EventLoop " << this << " stop looping";

@@ -77,7 +77,7 @@ void TimerQueue::resetTime(timespec time) {
     new_value.it_value.tv_nsec = 0;
     new_value.it_interval.tv_sec = 0;
     new_value.it_interval.tv_nsec = 0;
-    printf("timerfd %d, after %d s\n", timerFd_, time.tv_sec);
+    printf("timerfd %d, after %ld s\n", timerFd_, time.tv_sec);
     timerfd_settime(timerFd_, 0, &new_value, NULL);
 }
 
@@ -87,7 +87,7 @@ void TimerQueue::addTimer(TimerCallBack cb, timespec time) {
     bool earliestChanged = false;
     auto it = timers_.begin();
     if (it == timers_.end() || time < it->first) {
-      earliestChanged = true;
+        earliestChanged = true;
     }
     timers_.insert(Entry(time, timer));
 

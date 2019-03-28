@@ -4,6 +4,7 @@
 #include "Socket.h"
 #include "InetAddress.h"
 #include "../base/noncopyable.h"
+#include "Channel.h"
 #include <functional>
 
 namespace GaoServer {
@@ -16,7 +17,8 @@ public:
     typedef std::function<void (int sockfd, const InetAddress&)> NewConnectionCallBack;
     Acceptor(EventLoop* loop, const InetAddress& listenAddr);
 
-    void setNewConnectionCallBack(NewConnectionCallBack& cb) {
+    //for error, non-const references can't bind temp objects.
+    void setNewConnectionCallBack(const NewConnectionCallBack& cb) {
         newConnectionCallBack_ = cb;
     }
 
@@ -29,7 +31,6 @@ private:
     EventLoop* loop_;
     Socket acceptSocket_;
     Channel acceptChannel_;
-
     NewConnectionCallBack newConnectionCallBack_;
     bool listenning_;
 };
