@@ -19,6 +19,9 @@ class Channel {
 public:
     typedef std::function<void ()> EventCallBack;
 	Channel();
+    Channel(int fd) : fd_(fd) {
+
+    }
 
 	void handleEvent();
 	void setReadCallBack(const EventCallBack &cb) {

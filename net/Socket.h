@@ -2,6 +2,7 @@
 #define NET_SOCKET_H
 
 #include "../base/noncopyable.h"
+#include <sys/socket.h>
 
 struct tcp_info;
 
@@ -14,6 +15,10 @@ class Socket : noncopyable
 public:
     explicit Socket(int sockfd) : sockfd_(sockfd) {
     }
+
+    explicit Socket();
+    
+    ~Socket();
 
     int fd() const {
         return sockfd_;
