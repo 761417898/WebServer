@@ -3,6 +3,9 @@
 
 #include "../base/noncopyable.h"
 #include <sys/socket.h>
+#include <stdint.h>
+#include <string.h>
+#include <netinet/in.h>
 
 struct tcp_info;
 
@@ -27,6 +30,16 @@ public:
     bool getTcpInfo(struct tcp_info*) const;
 
     void bindAddress(const InetAddress& localaddr);
+
+    static sockaddr_in getSockName(int sockfd) {
+        sockaddr_in localAddr;
+        memset(&localAddr, 0, sizeof (localAddr));
+        socklen_t addrLen = static_cast<socklen_t>(sizeof localAddr);
+        if (::getsockname(sockfd, (sockaddr*)(&localAddr), &addrLen) < 0) {
+        //    LOG_SYSERR << "sockets::getLocalAddr";
+        }
+        return localAddr;
+    }
 
     void listen();
 

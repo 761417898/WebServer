@@ -22,7 +22,7 @@ void testSocket() {
 }
 
 static void testAcceptorNewConnCallBack(int sockfd, const InetAddress& addr) {
-    printf("accept a new Connection");
+    printf("This is testAcceptorNewConnCallBack, accept a new Connection\n");
 }
 
 static void* closeMainLoopTestAcceptor(void* arg) {

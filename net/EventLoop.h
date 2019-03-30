@@ -52,6 +52,10 @@ public:
 		}
 	}
 
+    void runInLoop(std::function<void ()> cb) {
+        cb();
+    }
+
     void modChannel(Channel* channel);
 
     void addChannel(Channel* channel);
