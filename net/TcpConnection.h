@@ -19,12 +19,17 @@ typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 
 class TcpConnection {
 private:
-    enum StateE {kConnecting, kConnected};
+    enum StateE {kConnecting, kConnected, kDisConnected};
     StateE state_;
     void setState(StateE s) {
         state_ = s;
     }
+
     void handleRead();
+    void handleWrite();
+    void handleClose();
+    void handleError();
+
     EventLoop* loop_;
     std::string name_;
     std::shared_ptr<Socket> socket_;
@@ -36,8 +41,10 @@ private:
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
     typedef std::function<void (const TcpConnectionPtr& conn,
                                 const char* data, ssize_t len)> MessageCallBack;
+    typedef std::function<void (const TcpConnectionPtr&)> CloseCallBack;
     ConnectionCallBack connectionCallBack_;
     MessageCallBack messageCallBack_;
+    CloseCallBack closeCallBack_;
 public:
     TcpConnection(EventLoop* loop,
                   const std::string& name,
@@ -47,13 +54,22 @@ public:
     ~TcpConnection() {
 
     }
-    void setConnectionCallBack(ConnectionCallBack& cb) {
+    void setConnectionCallBack(const ConnectionCallBack& cb) {
         connectionCallBack_ = cb;
     }
-    void setMessageCallBack(MessageCallBack& cb) {
+    void setMessageCallBack(const MessageCallBack& cb) {
         messageCallBack_ = cb;
     }
+    void setCloseCallBack(const CloseCallBack& cb) {
+        closeCallBack_ = cb;
+    }
+
     void connectEstablish();
+    void connectDestroyed();
+
+    std::string name() {
+        return name_;
+    }
 };
 
 }

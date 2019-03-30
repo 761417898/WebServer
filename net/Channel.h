@@ -22,6 +22,7 @@ public:
     Channel(int fd) : fd_(fd) {
 
     }
+    ~Channel();
 
 	void handleEvent();
 	void setReadCallBack(const EventCallBack &cb) {
@@ -81,8 +82,9 @@ private:
 
 	int fd_;
 	int events_;
-    //回传的事件
 	int revents_;
+    //防止事件处理期间Channel被析构 
+    bool eventHandling_;
 
 	EventCallBack readCallBack_;
 	EventCallBack writeCallBack_;

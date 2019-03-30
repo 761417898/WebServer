@@ -32,15 +32,47 @@ TcpConnection::TcpConnection(EventLoop* loop,
 void TcpConnection::handleRead() {
     char buf[65536];
     ssize_t n = ::read(channel_->fd(), buf, sizeof (buf));
-    messageCallBack_(sharedThis, buf, n);
+    if (n > 0) {
+        messageCallBack_(sharedThis, buf, n);
+    } else if (n == 0) {
+        handleClose();
+    } else {
+        handleError();
+    }
+
+}
+
+void TcpConnection::handleClose() {
+    loop_->assertInLoopThread();
+    assert(state_ == kConnected);
+    channel_->disableAll();
+    closeCallBack_(sharedThis);
+}
+
+void TcpConnection::handleError() {
+
+}
+
+void TcpConnection::handleWrite() {
+
 }
 
 void TcpConnection::connectEstablish() {
     loop_->assertInLoopThread();
+    assert(state_ == kConnecting);
     setState(kConnected);
     channel_->enableReading();
     loop_->addChannel(channel_.get());
     connectionCallBack_(sharedThis);
+}
+
+void TcpConnection::connectDestroyed() {
+    loop_->assertInLoopThread();
+    assert(state_ == kConnected);
+    setState(kDisConnected);
+    channel_->disableAll();
+    connectionCallBack_(sharedThis);
+    loop_->delChannel(channel_.get());
 }
 
 }

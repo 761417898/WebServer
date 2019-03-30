@@ -1,5 +1,6 @@
 #include "Channel.h"
 #include <memory>
+#include <cassert>
 
 namespace GaoServer {
 	
@@ -7,9 +8,14 @@ const int Channel::kNoneEvent = 0;
 const int Channel::kReadEvent = POLLIN | POLLPRI;
 const int Channel::kWriteEvent = POLLOUT;
 
-Channel::Channel() : events_(0), revents_(0) {}
+Channel::Channel() : events_(0), revents_(0), eventHandling_(false) {}
+
+Channel::~Channel() {
+    assert(!eventHandling_);
+}
 
 void Channel::handleEvent() {
+    eventHandling_ = true;
 	if (revents_ & POLLNVAL) {
 		//LOG_WARN <<
 	}
@@ -24,6 +30,7 @@ void Channel::handleEvent() {
 	if (revents_ & POLLOUT) {
 		if (writeCallBack_) writeCallBack_();
 	}
+    eventHandling_ = false;
 }
 
 }

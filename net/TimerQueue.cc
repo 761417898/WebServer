@@ -23,6 +23,10 @@ TimerQueue::TimerQueue() : timerFd_(createTimerFd()), timerChannel(),
 
 TimerQueue::~TimerQueue() {
     ::close(timerFd_);
+
+    for (const Entry& timer : timers_) {
+        delete timer.second;
+    }
 }
 
 void TimerQueue::readTimerFd() {

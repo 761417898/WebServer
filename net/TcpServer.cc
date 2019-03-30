@@ -17,6 +17,13 @@ void TcpServer::start() {
     acceptor_->listen();
 }
 
+void TcpServer::removeConnection(const TcpConnectionPtr &conn) {
+    loop_->assertInLoopThread();
+    connections_.erase(conn->name());
+    //loop_->queueInLoop()
+    conn->connectDestroyed();
+}
+
 void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     loop_->assertInLoopThread();
     char buf[32];
@@ -31,6 +38,8 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     connections_[connName] = conn;
     conn->setConnectionCallBack(connectionCallBack_);
     conn->setMessageCallBack(messageCallBack_);
+    conn->setCloseCallBack(std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
+    //conn->setCloseCallBack(removeConnection);
     conn->connectEstablish();
 }
 
