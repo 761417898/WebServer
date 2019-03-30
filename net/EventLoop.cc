@@ -36,7 +36,7 @@ void EventLoop::loop() {
 	assertInLoopThread();
 	looping_ = true;
     quit_ = false;
-
+    printf("\n......loopping.....\n");
     while (!quit_) {
         activeChannels_.clear();
         poller_->poll(activeChannels_);

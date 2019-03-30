@@ -16,7 +16,7 @@ namespace GaoServer {
 class EventLoop;
 class Channel;
 
-class Acceptor : noncopyable {
+class Acceptor {
 public:
     typedef std::function<void (int sockfd, const InetAddress&)> NewConnectionCallBack;
     Acceptor(EventLoop* loop, const InetAddress& listenAddr);

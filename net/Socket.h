@@ -13,8 +13,7 @@ namespace GaoServer {
 
 class InetAddress;
 
-class Socket : noncopyable
-{
+class Socket {
 public:
     explicit Socket(int sockfd) : sockfd_(sockfd) {
     }

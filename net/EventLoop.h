@@ -16,7 +16,7 @@
 
 namespace GaoServer {
 
-class EventLoop : noncopyable {
+class EventLoop {
 private:
 
     typedef std::vector<Channel*> ChannelList;
@@ -51,10 +51,6 @@ public:
 			abortNotInLoopThread();
 		}
 	}
-
-    void runInLoop(std::function<void ()> cb) {
-        cb();
-    }
 
     void modChannel(Channel* channel);
 

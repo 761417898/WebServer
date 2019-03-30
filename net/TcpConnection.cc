@@ -17,6 +17,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
       sharedThis(this) {
       channel_->setReadCallBack(
           std::bind(&TcpConnection::handleRead, this));
+
      /*channel_->setWriteCallback(
           std::bind(&TcpConnection::handleWrite, this));
       channel_->setCloseCallback(
@@ -32,6 +33,14 @@ void TcpConnection::handleRead() {
     char buf[65536];
     ssize_t n = ::read(channel_->fd(), buf, sizeof (buf));
     messageCallBack_(sharedThis, buf, n);
+}
+
+void TcpConnection::connectEstablish() {
+    loop_->assertInLoopThread();
+    setState(kConnected);
+    channel_->enableReading();
+    loop_->addChannel(channel_.get());
+    connectionCallBack_(sharedThis);
 }
 
 }

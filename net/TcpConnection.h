@@ -1,3 +1,8 @@
+/*
+ * 接accept，控制流又回到了tcpserevr的newconnection中，这里会新建一个connection，connection的构造函数会对
+ * connectfd创建channel并注册。这里刚建立连接时会调用早已注册的connCallBack，收到消息会调用messageCallBack
+ */
+
 #ifndef NET_TCPCONNECTION_H
 #define NET_TCPCONNECTION_H
 
@@ -39,7 +44,9 @@ public:
                   int sockfd,
                   const InetAddress& localAddr,
                   const InetAddress& peerAddr);
-    ~TcpConnection();
+    ~TcpConnection() {
+
+    }
     void setConnectionCallBack(ConnectionCallBack& cb) {
         connectionCallBack_ = cb;
     }

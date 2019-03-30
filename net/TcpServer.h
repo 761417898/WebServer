@@ -6,7 +6,6 @@
 #include "InetAddress.h"
 #include "TcpConnection.h"
 #include "Socket.h"
-#include <functional>
 
 namespace GaoServer {
 

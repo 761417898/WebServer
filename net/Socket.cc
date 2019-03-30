@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <fcntl.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <cstdio>
 
@@ -36,6 +37,8 @@ void Socket::bindAddress(const InetAddress& localaddr) {
 void Socket::listen() {
     int ret = ::listen(sockfd_, SOMAXCONN);
     printf("listen return %d, %d fd listen\n", ret, sockfd_);
+    //sockaddr_in addr = Socket::getSockName(sockfd_);
+    //printf("listen debug: ip = %s, port = %d...\n", inet_ntoa(addr.sin_addr), htons( addr.sin_port));
 }
 
 int Socket::accept(InetAddress *peeraddr) {

@@ -4,16 +4,17 @@ namespace GaoServer {
 
 TcpServer::TcpServer(EventLoop *loop, const InetAddress& listenAddr, std::string& name)
     : loop_(loop), name_(name), acceptor_(new Acceptor(loop_, listenAddr)),
-      started_(false), nextConnId_(1) {}
+      started_(false), nextConnId_(1) {
+    acceptor_->setNewConnectionCallBack(
+          std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
+}
 
 TcpServer::~TcpServer() {
 
 }
 
 void TcpServer::start() {
-    if (!acceptor_->listenning()) {
-        loop_->runInLoop(std::bind(&Acceptor::listen, *acceptor_));
-    }
+    acceptor_->listen();
 }
 
 void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
@@ -23,6 +24,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     ++nextConnId_;
     std::string connName = name_ + buf;
     //LOG_INFO << "TcpServer::newConnection ..."
+    printf("TcpServer::newConnection\n");
     InetAddress localAddr(Socket::getSockName(sockfd));
     TcpConnectionPtr conn(
                 new TcpConnection(loop_, connName, sockfd, localAddr, peerAddr));
