@@ -53,7 +53,7 @@ void EventLoop::loop() {
         poller_->poll(activeChannels_);
         for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
-                printf("\n%d fd is actived, handling event:", (*it)->fd());
+                printf("\n%d fd is actived, handling event:\n", (*it)->fd());
                 (*it)->handleEvent();
 
         }
@@ -90,7 +90,6 @@ void EventLoop::addTimer(TimerCallBack cb, timespec time) {
 }
 
 void EventLoop::wakeup() {
-    printf("wake up\n");
     uint64_t one = 1;
     ssize_t n = write(wakeupFd_, &one, sizeof one);
 }
@@ -106,7 +105,6 @@ void EventLoop::queueInLoop(Functor cb) {
     MutexLockGuard lock(mutex_);
     pendingFunctors_.push_back(std::move(cb));
     }
-    wakeup();
     if (!isInLoopThread() || callingPendingFunctors_) {
         wakeup();
     }
@@ -122,6 +120,7 @@ void EventLoop::doPendingFunctors() {
 
     for (const Functor& functor : functors)
     {
+        printf("this is pending func\n");
         functor();
     }
     callingPendingFunctors_ = false;
