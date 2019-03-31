@@ -5,6 +5,7 @@
  #include <netinet/in.h>
  #include <errno.h>
  #include <string.h>
+ #include <cstdlib>
  #include <arpa/inet.h>
  #include <unistd.h>
  #define MAXLINE 1024
@@ -38,9 +39,9 @@
      exit(0);
      }
      printf("维持连接但不做事\n");
-while(1) {
 
-}
+     sleep(3);
+
      close(socketfd);
      printf("exit\n");
      exit(0);

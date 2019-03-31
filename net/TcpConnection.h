@@ -17,7 +17,7 @@ namespace GaoServer {
 class TcpConnection;
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 
-class TcpConnection {
+class TcpConnection : public std::enable_shared_from_this<TcpConnection>{
 private:
     enum StateE {kConnecting, kConnected, kDisConnected};
     StateE state_;
@@ -36,7 +36,6 @@ private:
     std::shared_ptr<Channel> channel_;
     InetAddress localAddr_;
     InetAddress peerAddr_;
-    const TcpConnectionPtr sharedThis;
 
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
     typedef std::function<void (const TcpConnectionPtr& conn,
@@ -51,9 +50,7 @@ public:
                   int sockfd,
                   const InetAddress& localAddr,
                   const InetAddress& peerAddr);
-    ~TcpConnection() {
-
-    }
+    ~TcpConnection();
     void setConnectionCallBack(const ConnectionCallBack& cb) {
         connectionCallBack_ = cb;
     }

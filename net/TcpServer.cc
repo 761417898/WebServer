@@ -19,9 +19,16 @@ void TcpServer::start() {
 
 void TcpServer::removeConnection(const TcpConnectionPtr &conn) {
     loop_->assertInLoopThread();
-    connections_.erase(conn->name());
+    ssize_t n = connections_.erase(conn->name());
+    assert(n == 1);
     //loop_->queueInLoop()
-    conn->connectDestroyed();
+    /*
+     * 　这里把connectionDestroyed加到执行队列里就可以返回了，返回到
+     *　Channel HandleEvent中，这样HandleEvent函数就可以正常结束了。由于
+     *　我们传递的是bind，所以该connection直到connectionDestroyed执行后
+     *　才会被析构掉。
+     */
+    loop_->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
 }
 
 void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {

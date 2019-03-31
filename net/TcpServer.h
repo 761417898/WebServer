@@ -21,6 +21,7 @@ private:
 
     //used for acceptor, callback
     void newConnection(int sockfd, const InetAddress& peerAddr);
+    void removeConnection(const TcpConnectionPtr &conn);
     typedef std::map<std::string, TcpConnectionPtr> ConnectionMap;
 
     EventLoop* loop_;
@@ -29,7 +30,7 @@ private:
     bool started_;
     int nextConnId_;
     ConnectionMap connections_;
-    void removeConnection(const TcpConnectionPtr &conn);
+    
 public:
     TcpServer(EventLoop *loop, const InetAddress& listenAddr, std::string& name);
     ~TcpServer();

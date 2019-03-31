@@ -19,6 +19,10 @@ void Channel::handleEvent() {
 	if (revents_ & POLLNVAL) {
 		//LOG_WARN <<
 	}
+    if ((revents_ & POLLHUP) && !(revents_ & POLLIN)) {
+        if (closeCallBack_)
+            closeCallBack_();
+    }
 	if (revents_ & (POLLERR | POLLNVAL)) {
         if (errorCallBack_)
             errorCallBack_();

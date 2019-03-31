@@ -34,6 +34,9 @@ public:
 	void setErrorCallBack(const EventCallBack &cb) {
 		errorCallBack_ = cb;
 	}
+    void setCloseCallBack(const EventCallBack &cb) {
+        closeCallBack_ = cb;
+    }
 	int fd() const {
 		return fd_;
 	}
@@ -89,6 +92,7 @@ private:
 	EventCallBack readCallBack_;
 	EventCallBack writeCallBack_;
 	EventCallBack errorCallBack_;
+    EventCallBack closeCallBack_;
 };
 
 }

@@ -18,7 +18,7 @@ namespace GaoServer {
 
 class EventLoop {
 private:
-
+    typedef std::function<void()> Functor;
     typedef std::vector<Channel*> ChannelList;
     typedef std::function<void ()> TimerCallBack;
     //是否在运行
@@ -34,6 +34,15 @@ private:
     void abortNotInLoopThread() {
     //
     }
+    MutexLock mutex_;
+    bool callingPendingFunctors_; /* atomic */
+    std::vector<Functor> pendingFunctors_;
+    void wakeup();
+    void doPendingFunctors();
+    //used for wakeup
+    int wakeupFd_;
+    std::unique_ptr<Channel> wakeupChannel_;
+    void handleRead();
 
 public:
 	EventLoop();
@@ -65,6 +74,8 @@ public:
     void setPoller(std::shared_ptr<EPoller> poller) {
         poller_ = poller;
     }
+
+    void queueInLoop(Functor cb);
 
 };
 

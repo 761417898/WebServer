@@ -3,23 +3,34 @@
 #include <cassert>
 #include <cstdio>
 #include <pthread.h>
+#include <sys/eventfd.h>
 //#include "base/Logging.h"
 
 namespace GaoServer {
 
 __thread EventLoop* t_loopInThisThread = NULL;
 
+int createEventfd()
+{
+  int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+  return evtfd;
+}
+
 EventLoop::EventLoop() :
-    looping_(false), threadId_(CurrentThread::tid()) {
+    looping_(false), quit_(false), threadId_(CurrentThread::tid()),
+    poller_(new EPoller()), timerQueue_(new TimerQueue()), callingPendingFunctors_(false),
+    wakeupFd_(createEventfd()), wakeupChannel_(new Channel(wakeupFd_)) {
 	//LOG_TRACE << "EventLoop create " << this << " in thread " << threadId_;
 	if (t_loopInThisThread) {
 		//LOG_FATAL
 	} else {
 		t_loopInThisThread = this;
 	}
-    timerQueue_ = std::make_shared<TimerQueue>();
-    poller_ = std::make_shared<EPoller>();
     addChannel(&(timerQueue_->timerChannel));
+    wakeupChannel_->setReadCallBack(
+          std::bind(&EventLoop::handleRead, this));
+    wakeupChannel_->enableReading();
+    addChannel(wakeupChannel_.get());
 }
 
 EventLoop::~EventLoop() {
@@ -42,9 +53,11 @@ void EventLoop::loop() {
         poller_->poll(activeChannels_);
         for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
+                printf("\n%d fd is actived, handling event:", (*it)->fd());
                 (*it)->handleEvent();
-            printf("\n%d fd is actived\n", (*it)->fd());
+
         }
+        doPendingFunctors();
     }
 	//LOG_TRACE << "EventLoop " << this << " stop looping";
 	looping_ = false;
@@ -75,5 +88,44 @@ void EventLoop::addTimer(TimerCallBack cb, timespec time) {
     assertInLoopThread();
     timerQueue_->addTimer(cb, time);
 }
+
+void EventLoop::wakeup() {
+    printf("wake up\n");
+    uint64_t one = 1;
+    ssize_t n = write(wakeupFd_, &one, sizeof one);
+}
+
+void EventLoop::handleRead()
+{
+  uint64_t one = 1;
+  ssize_t n = ::read(wakeupFd_, &one, sizeof one);
+}
+
+void EventLoop::queueInLoop(Functor cb) {
+    {
+    MutexLockGuard lock(mutex_);
+    pendingFunctors_.push_back(std::move(cb));
+    }
+    wakeup();
+    if (!isInLoopThread() || callingPendingFunctors_) {
+        wakeup();
+    }
+}
+
+void EventLoop::doPendingFunctors() {
+    std::vector<Functor> functors;
+    callingPendingFunctors_ = true;
+    {
+    MutexLockGuard lock(mutex_);
+    functors.swap(pendingFunctors_);
+    }
+
+    for (const Functor& functor : functors)
+    {
+        functor();
+    }
+    callingPendingFunctors_ = false;
+}
+
 
 }
