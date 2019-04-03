@@ -102,6 +102,14 @@ void EventLoop::handleRead()
   ssize_t n = ::read(wakeupFd_, &one, sizeof one);
 }
 
+void EventLoop::runInLoop(Functor cb) {
+    if (isInLoopThread()) {
+        cb();
+    } else {
+        queueInLoop(std::move(cb));
+    }
+}
+
 void EventLoop::queueInLoop(Functor cb) {
     {
     MutexLockGuard lock(mutex_);

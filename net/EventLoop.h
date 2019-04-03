@@ -77,6 +77,8 @@ public:
 
     void queueInLoop(Functor cb);
 
+    void runInLoop(Functor cb);
+
 };
 
 }

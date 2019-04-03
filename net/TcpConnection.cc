@@ -62,7 +62,20 @@ void TcpConnection::handleError() {
 }
 
 void TcpConnection::handleWrite() {
-
+    loop_->assertInLoopThread();
+    if (channel_->isWriting()) {
+        ssize_t n = ::write(channel_->fd(), outputBuffer_.peek(), outputBuffer_.readableBytes());
+        if (n > 0) {
+            outputBuffer_.retrieve(n);
+            channel_->disableWriting();
+            if (outputBuffer_.readableBytes() == 0) {
+                channel_->disableWriting();
+                if (state_ == kDisConnecting) {
+                    shutDownInLoop();
+                }
+            }
+        }
+    }
 }
 
 void TcpConnection::connectEstablish() {
@@ -82,6 +95,52 @@ void TcpConnection::connectDestroyed() {
     channel_->disableAll();
     connectionCallBack_(shared_from_this());
     loop_->delChannel(channel_.get());
+}
+
+void TcpConnection::shutdown() {
+    if (state_ == kConnected) {
+        setState(kDisConnecting);
+        loop_->runInLoop(std::bind(&TcpConnection::shutDownInLoop, this));
+    }
+}
+
+void TcpConnection::shutDownInLoop() {
+    loop_->assertInLoopThread();
+    if (!channel_->isWriting()) {
+        socket_->shutdownWrite();
+    }
+}
+
+void TcpConnection::send(const std::string &message) {
+    if (state_ == kConnected) {
+        if (loop_->isInLoopThread()) {
+            sendInLoop(message);
+        } else {
+            loop_->runInLoop(
+                        std::bind(&TcpConnection::sendInLoop, this, message));
+        }
+    }
+}
+
+void TcpConnection::sendInLoop(const std::string &message) {
+    loop_->assertInLoopThread();
+    ssize_t nwrote = 0;
+    if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
+        nwrote = ::write(channel_->fd(), message.data(), message.size());
+        if (nwrote >= 0) {
+            if (static_cast<size_t>(nwrote) < message.size()) {
+
+            }
+        } else {
+                nwrote = 0;
+        }
+    }
+    if (static_cast<size_t>(nwrote) < message.size()) {
+        outputBuffer_.append(message.data() + nwrote, message.size() - nwrote);
+        if (!channel_->isWriting()) {
+            channel_->enableWriting();
+        }
+    }
 }
 
 }

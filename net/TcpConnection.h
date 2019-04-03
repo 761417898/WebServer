@@ -20,7 +20,7 @@ typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>{
 private:
-    enum StateE {kConnecting, kConnected, kDisConnected};
+    enum StateE {kConnecting, kConnected, kDisConnecting, kDisConnected};
     StateE state_;
     void setState(StateE s) {
         state_ = s;
@@ -49,6 +49,10 @@ private:
     CloseCallBack closeCallBack_;
 
     Buffer inputBuffer_;
+    Buffer outputBuffer_;
+
+    void sendInLoop(const std::string& message);
+    void shutDownInLoop();
 public:
     TcpConnection(EventLoop* loop,
                   const std::string& name,
@@ -72,6 +76,9 @@ public:
     std::string name() {
         return name_;
     }
+
+    void send(const std::string& message);
+    void shutdown();
 };
 
 }

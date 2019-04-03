@@ -56,6 +56,7 @@ public:
 		events_ |= kReadEvent;
 	//	update();
 	}
+    //要用时才enable。避免busy loop
 	void enableWriting() {
 		events_ |= kWriteEvent;
 	//	update();
@@ -74,6 +75,10 @@ public:
 		events_ = kNoneEvent;
 	//	update();
 	}
+
+    bool isWriting() const {
+        return events_ & kWriteEvent;
+    }
 
 private:
     //void update();

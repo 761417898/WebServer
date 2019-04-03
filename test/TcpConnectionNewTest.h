@@ -15,6 +15,9 @@ void onConnectionTestNewConn(const TcpConnectionPtr& conn) {
 
 void onMessage(const TcpConnectionPtr& conn, Buffer* buffer) {
     printf("on message, received: %ld bytes, %s\n", buffer->readableBytes(), (buffer->readAsString(12)).c_str());
+
+    std::string message = "hello world too\n";
+    conn->send(message);
 }
 
 void testTcpConnectionNew() {

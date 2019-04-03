@@ -77,6 +77,12 @@ public:
         return result;
     }
 
+    const char* peek()
+    { return begin() + readIndex_; }
+
+    void retrieve(size_t len) {
+
+    }
 
 private:
     char* begin()
@@ -104,8 +110,7 @@ private:
     char* beginWrite()
     { return begin() + writeIndex_; }
 
-    const char* peek()
-    { return begin() + readIndex_; }
+
 
 };
 
