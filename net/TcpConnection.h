@@ -11,6 +11,7 @@
 #include "Socket.h"
 #include "Channel.h"
 #include "InetAddress.h"
+#include "Buffer.h"
 
 namespace GaoServer {
 
@@ -38,12 +39,16 @@ private:
     InetAddress peerAddr_;
 
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
+    //typedef std::function<void (const TcpConnectionPtr& conn,
+    //                            const char* data, ssize_t len)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr& conn,
-                                const char* data, ssize_t len)> MessageCallBack;
+                                Buffer* buffer)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr&)> CloseCallBack;
     ConnectionCallBack connectionCallBack_;
     MessageCallBack messageCallBack_;
     CloseCallBack closeCallBack_;
+
+    Buffer inputBuffer_;
 public:
     TcpConnection(EventLoop* loop,
                   const std::string& name,

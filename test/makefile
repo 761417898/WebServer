@@ -1,5 +1,5 @@
-unittest: main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o
-	g++ -g -W -o unittest main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o -lpthread
+unittest: main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o
+	g++ -g -W -o unittest main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o -lpthread
 
 main.o: main.cc
 	g++ -g -W -c -o main.o main.cc -lpthread
@@ -36,6 +36,9 @@ TcpConnection.o:
 
 TcpServer.o:
 	g++ -g -W -c -o TcpServer.o ../net/TcpServer.cc
+
+Buffer.o:
+	g++ -g -W -c -o Buffer.o ../net/Buffer.cc
 
 clean:
 	rm *.o

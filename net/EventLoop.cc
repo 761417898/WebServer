@@ -26,10 +26,12 @@ EventLoop::EventLoop() :
 	} else {
 		t_loopInThisThread = this;
 	}
+    printf("timerQueue fd ");
     addChannel(&(timerQueue_->timerChannel));
     wakeupChannel_->setReadCallBack(
           std::bind(&EventLoop::handleRead, this));
     wakeupChannel_->enableReading();
+    printf("wakeup fd ");
     addChannel(wakeupChannel_.get());
 }
 

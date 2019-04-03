@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstdio>
 #include <unistd.h>
+#include "../net/Buffer.h"
 #include "../net/TcpServer.h"
 
 namespace GaoServer {
@@ -12,8 +13,8 @@ void onConnectionTestNewConn(const TcpConnectionPtr& conn) {
     printf("This is onConnectionTestNewConn\n");
 }
 
-void onMessage(const TcpConnectionPtr& conn, const char* data, ssize_t len) {
-    printf("on message, received: %ld bytes\n", len);
+void onMessage(const TcpConnectionPtr& conn, Buffer* buffer) {
+    printf("on message, received: %ld bytes, %s\n", buffer->readableBytes(), (buffer->readAsString(12)).c_str());
 }
 
 void testTcpConnectionNew() {

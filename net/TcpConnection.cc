@@ -36,9 +36,11 @@ TcpConnection::~TcpConnection() {
 
 void TcpConnection::handleRead() {
     char buf[65536];
-    ssize_t n = ::read(channel_->fd(), buf, sizeof (buf));
+    int savedErrno = 0;
+    ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
     if (n > 0) {
-        messageCallBack_(shared_from_this(), buf, n);
+        messageCallBack_(shared_from_this(), &inputBuffer_);
+        //messageCallBack_(shared_from_this(), buf, n);
     } else if (n == 0) {
         handleClose();
     } else {

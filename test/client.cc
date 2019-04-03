@@ -33,7 +33,7 @@
 
      printf("send message to server\n");
 
-     if((send(socketfd,sendline,strlen(buf),0)) < 0)
+     if((send(socketfd,buf,strlen(buf),0)) < 0)
      {
      printf("send mes error: %s errno : %d",strerror(errno),errno);
      exit(0);

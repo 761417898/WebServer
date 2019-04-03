@@ -6,6 +6,7 @@
 #include "InetAddress.h"
 #include "TcpConnection.h"
 #include "Socket.h"
+#include "Buffer.h"
 
 namespace GaoServer {
 
@@ -13,7 +14,7 @@ class TcpServer {
 private:
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
     typedef std::function<void (const TcpConnectionPtr& conn,
-                                const char* data, ssize_t len)> MessageCallBack;
+                                Buffer* buffer)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr&)> CloseCallBack;
     ConnectionCallBack connectionCallBack_;
     MessageCallBack messageCallBack_;
