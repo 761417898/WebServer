@@ -16,10 +16,10 @@ base/log/LogFile.cc
 base/log/LogFile.h
 base/log/LogStream.cc
 base/log/LogStream.h
-base/log/LogStream.h
 base/log/Logging.cc
 base/log/Logging.h
 base/noncopyable.h
+http/httpd.cc
 net/Acceptor.cc
 net/Acceptor.h
 net/Buffer.cc
@@ -56,5 +56,4 @@ test/TcpConnectionNewTest.h
 test/ThreadTest.h
 test/client.cc
 test/main.cc
-test/makefile
 test/test.cc
