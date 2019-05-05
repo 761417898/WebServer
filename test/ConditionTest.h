@@ -1,4 +1,5 @@
 #include "../base/Condition.h"
+#include "../base/MutexLock.h"
 #include <cassert>
 #include <cstdlib>
 

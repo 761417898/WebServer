@@ -10,6 +10,8 @@
 
 namespace GaoServer {
 
+class EventLoopThreadPool;
+
 class TcpServer {
 private:
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
@@ -23,15 +25,19 @@ private:
     //used for acceptor, callback
     void newConnection(int sockfd, const InetAddress& peerAddr);
     void removeConnection(const TcpConnectionPtr &conn);
+    void removeConnectionInLoop(const TcpConnectionPtr&conn);
+
     typedef std::map<std::string, TcpConnectionPtr> ConnectionMap;
 
     EventLoop* loop_;
     const std::string name_;
     std::shared_ptr<Acceptor> acceptor_;
+
+    std::shared_ptr<EventLoopThreadPool> threadPool_;
+
     bool started_;
     int nextConnId_;
     ConnectionMap connections_;
-    
 public:
     TcpServer(EventLoop *loop, const InetAddress& listenAddr, std::string& name);
     ~TcpServer();

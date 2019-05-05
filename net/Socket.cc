@@ -31,12 +31,12 @@ void Socket::bindAddress(const InetAddress& localaddr) {
 
     char buf[100];
     localaddr.toIp(buf, sizeof (buf));
-    printf("%d fd, bind IP %s, Port %d\n", sockfd_, buf, localaddr.toPortIpv6());
+    //printf("%d fd, bind IP %s, Port %d\n", sockfd_, buf, localaddr.toPortIpv6());
 }
 
 void Socket::listen() {
     int ret = ::listen(sockfd_, SOMAXCONN);
-    printf("listen return %d, %d fd listen\n", ret, sockfd_);
+    //printf("listen return %d, %d fd listen\n", ret, sockfd_);
     //sockaddr_in addr = Socket::getSockName(sockfd_);
     //printf("listen debug: ip = %s, port = %d...\n", inet_ntoa(addr.sin_addr), htons( addr.sin_port));
 }
@@ -45,9 +45,9 @@ int Socket::accept(InetAddress *peeraddr) {
     struct sockaddr_in addr;
     ::memset(&addr, 0, sizeof (addr));
     socklen_t addrlen = static_cast<socklen_t>(sizeof addr);
-    printf("%d fd accept\n", sockfd_);
+    //printf("%d fd accept\n", sockfd_);
     int connectFd = ::accept(sockfd_, (sockaddr*)&addr, &addrlen);
-    printf("accepted a new connect fd %d\n", connectFd);
+    //printf("accepted a new connect fd %d\n", connectFd);
     peeraddr->setSockAddrInet(addr);
 
     ::fcntl(connectFd,F_SETFL,::fcntl(connectFd, F_GETFL)|O_NONBLOCK|FD_CLOEXEC);

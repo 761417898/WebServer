@@ -40,7 +40,7 @@
      }
      printf("维持连接但不做事\n");
 
-     sleep(3);
+   //  sleep(3);
 
      char bbuf[65536];
      int len = read(socketfd, bbuf, sizeof(bbuf));

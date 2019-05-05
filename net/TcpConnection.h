@@ -77,6 +77,10 @@ public:
         return name_;
     }
 
+    EventLoop* getLoop() {
+        return loop_;
+    }
+
     void send(const std::string& message);
     void shutdown();
 };

@@ -39,7 +39,7 @@ namespace GaoServer {
 		for (int idx = 0; idx < nfds; ++idx) {
 			epoll_event ev = events_[idx];
             Channel* channel = (Channel*)ev.data.ptr;
-  //          printf("\n%d\n", ev.data.fd);
+  //          //printf("\n%d\n", ev.data.fd);
 			channel->setRevents(ev.events);
 			ret.push_back(channel);
 		}

@@ -1,4 +1,6 @@
 #include "CountDownLatch.h"
+#include "Condition.h"
+#include "MutexLock.h"
 
 namespace GaoServer {
 
@@ -15,7 +17,7 @@ void CountDownLatch::wait() {
 }
 
 void CountDownLatch::countDown() {
-	//MutexLock析构时会自动解锁
+    //MutexLock
 	MutexLockGuard lock(mutex_);
 	--count_;
 	if (count_ == 0) {

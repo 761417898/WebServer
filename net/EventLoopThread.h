@@ -23,6 +23,7 @@ private:
 
     EventLoop* loop_;
     bool exiting_;
+public:
     Thread thread_;
     MutexLock mutex_;
     Condition cond_;

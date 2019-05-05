@@ -13,7 +13,7 @@ Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr)
 void Acceptor::handleRead() {
     loop_->assertInLoopThread();
     InetAddress peerAddr(0);
-    printf("%d received connect request\n", acceptSocket_.fd());
+    //printf("%d received connect request\n", acceptSocket_.fd());
     int connfd = acceptSocket_.accept(&peerAddr);
     if (connfd > 0) {
         newConnectionCallBack_(connfd, peerAddr);

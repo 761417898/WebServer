@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <pthread.h>
 #include <sys/eventfd.h>
-//#include "base/Logging.h"
 
 namespace GaoServer {
 
@@ -26,12 +25,12 @@ EventLoop::EventLoop() :
 	} else {
 		t_loopInThisThread = this;
 	}
-    printf("timerQueue fd ");
+    ////printf("timerQueue fd ");
     addChannel(&(timerQueue_->timerChannel));
     wakeupChannel_->setReadCallBack(
           std::bind(&EventLoop::handleRead, this));
     wakeupChannel_->enableReading();
-    printf("wakeup fd ");
+    ////printf("wakeup fd ");
     addChannel(wakeupChannel_.get());
 }
 
@@ -49,15 +48,18 @@ void EventLoop::loop() {
 	assertInLoopThread();
 	looping_ = true;
     quit_ = false;
-    printf("\n......loopping.....\n");
+    //printf("\n......loopping.....\n");
     while (!quit_) {
         activeChannels_.clear();
         poller_->poll(activeChannels_);
         for (ChannelList::iterator it = activeChannels_.begin();
             it != activeChannels_.end(); ++it) {
-                printf("\n%d fd is actived, handling event:\n", (*it)->fd());
-                (*it)->handleEvent();
+            if ((*it)->revents_ == 4) {
+                int x = 1;
+            }
 
+                //printf("\n%d fd is actived, handling %d event:\n", (*it)->fd(), (*it)->revents_);
+                (*it)->handleEvent(); 
         }
         doPendingFunctors();
     }
@@ -72,7 +74,7 @@ void EventLoop::quit() {
 
 void EventLoop::addChannel(Channel* channel) {
     assertInLoopThread();
-    printf("fd %d added\n", channel->fd());
+    //printf("fd %d added\n", channel->fd());
     poller_->epollAdd(channel);
 }
 
@@ -130,7 +132,7 @@ void EventLoop::doPendingFunctors() {
 
     for (const Functor& functor : functors)
     {
-        printf("this is pending func\n");
+        //printf("this is pending func\n");
         functor();
     }
     callingPendingFunctors_ = false;

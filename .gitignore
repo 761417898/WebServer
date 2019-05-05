@@ -1,5 +1,13 @@
 *.o
+*.a
+*.log
 a.out
 *.h.gch
 unittest
 server.*
+*.autosave
+.project
+.cproject
+*.user
+WebServer.*
+

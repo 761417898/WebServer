@@ -31,7 +31,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 }
 
 TcpConnection::~TcpConnection() {
-    printf("this is ~TcpConnection\n");
+    //printf("this is ~TcpConnection\n");
 }
 
 void TcpConnection::handleRead() {
@@ -50,10 +50,12 @@ void TcpConnection::handleRead() {
 }
 
 void TcpConnection::handleClose() {
-    printf("handleclose processing\n");
+    //printf("handleclose processing\n");
     loop_->assertInLoopThread();
-    assert(state_ == kConnected);
+    assert(state_ == kConnected || state_ == kDisConnecting);
+    setState(kDisConnecting);
     channel_->disableAll();
+    loop_->modChannel(channel_.get());
     closeCallBack_(shared_from_this());
 }
 
@@ -70,6 +72,7 @@ void TcpConnection::handleWrite() {
             channel_->disableWriting();
             if (outputBuffer_.readableBytes() == 0) {
                 channel_->disableWriting();
+                loop_->modChannel(channel_.get());
                 if (state_ == kDisConnecting) {
                     shutDownInLoop();
                 }
@@ -88,11 +91,12 @@ void TcpConnection::connectEstablish() {
 }
 
 void TcpConnection::connectDestroyed() {
-    printf("this is TcpConnection::connectDestroyed\n");
+    //printf("this is TcpConnection::connectDestroyed\n");
     loop_->assertInLoopThread();
-    assert(state_ == kConnected);
+    assert(state_ == kConnected || state_ == kDisConnecting);
     setState(kDisConnected);
     channel_->disableAll();
+    loop_->modChannel(channel_.get());
     connectionCallBack_(shared_from_this());
     loop_->delChannel(channel_.get());
 }
@@ -139,6 +143,7 @@ void TcpConnection::sendInLoop(const std::string &message) {
         outputBuffer_.append(message.data() + nwrote, message.size() - nwrote);
         if (!channel_->isWriting()) {
             channel_->enableWriting();
+            loop_->modChannel(channel_.get());
         }
     }
 }

@@ -1,10 +1,31 @@
-unittest: main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o
-	g++ -g -W -o unittest main.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o -lpthread
+unittest: main.o AsyncLogging.o FileUtil.o LogFile.o Logging.o LogStream.o Condition.o MutexLock.o EventLoopThread.o EventLoopThreadPool.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o
+	g++ -g -W -o unittest main.o AsyncLogging.o FileUtil.o LogFile.o Logging.o LogStream.o Condition.o MutexLock.o EventLoopThread.o EventLoopThreadPool.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o -lpthread
 
 main.o: main.cc
 	g++ -g -W -c -o main.o main.cc -lpthread
 
-CountDownLatch.o: ../base/CountDownLatch.cc
+AsyncLogging.o:
+	g++ -g -W -c -o AsyncLogging.o ../base/log/AsyncLogging.cc -lpthread
+
+FileUtil.o:
+	g++ -g -W -c -o FileUtil.o ../base/log/FileUtil.cc -lpthread
+
+LogFile.o:
+	g++ -g -W -c -o LogFile.o ../base/log/LogFile.cc -lpthread
+
+Logging.o:
+	g++ -g -W -c -o Logging.o ../base/log/Logging.cc -lpthread
+
+LogStream.o:
+	g++ -g -W -c -o LogStream.o ../base/log/LogStream.cc -lpthread
+
+Condition.o:
+	g++ -g -W -c -o Condition.o ../base/Condition.cc -lpthread
+
+MutexLock.o:
+	g++ -g -W -c -o MutexLock.o ../base/MutexLock.cc -lpthread
+
+CountDownLatch.o:
 	g++ -g -W -c -o CountDownLatch.o -lpthread ../base/CountDownLatch.cc
 
 Thread.o:
@@ -39,6 +60,12 @@ TcpServer.o:
 
 Buffer.o:
 	g++ -g -W -c -o Buffer.o ../net/Buffer.cc
+
+EventLoopThread.o:
+	g++ -g -W -c -o EventLoopThread.o ../net/EventLoopThread.cc
+
+EventLoopThreadPool.o:
+	g++ -g -W -c -o EventLoopThreadPool.o ../net/EventLoopThreadPool.cc
 
 clean:
 	rm *.o

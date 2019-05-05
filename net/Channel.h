@@ -20,7 +20,9 @@ public:
     typedef std::function<void ()> EventCallBack;
 	Channel();
     Channel(int fd) : fd_(fd) {
-
+        events_ = 0;
+        revents_ = 0;
+        eventHandling_ = false;
     }
     ~Channel();
 
@@ -90,6 +92,7 @@ private:
 
 	int fd_;
 	int events_;
+    public:
 	int revents_;
     //防止事件处理期间Channel被析构 
     bool eventHandling_;

@@ -5,13 +5,11 @@
 #include "MutexLock.h"
 #include "noncopyable.h"
 
-//门闸,确保func真正得到了执行，外层Thread的start才会返回
-
 namespace GaoServer {
 
 class CountDownLatch {
 private:
-	//const 函数中可以改变的属性
+	//const
 	mutable MutexLock mutex_;
 	Condition cond_;
 	int count_;
