@@ -60,10 +60,8 @@ namespace GaoServer {
 	}
 
 	Thread::~Thread() {
-		if (started_ && !joined_) {
-			//线程资源自动回收
-			pthread_detach(pthreadId_);
-		}
+        if (started_ && !joined_)
+		    join();
 	}
 
 	void Thread::setDefaultName() {

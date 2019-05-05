@@ -1,5 +1,5 @@
 unittest: main.o AsyncLogging.o FileUtil.o LogFile.o Logging.o LogStream.o Condition.o MutexLock.o EventLoopThread.o EventLoopThreadPool.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o
-	g++ -g -W -o unittest main.o AsyncLogging.o FileUtil.o LogFile.o Logging.o LogStream.o Condition.o MutexLock.o EventLoopThread.o EventLoopThreadPool.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o -lpthread
+	g++ -g -fno-inline -W -o unittest main.o AsyncLogging.o FileUtil.o LogFile.o Logging.o LogStream.o Condition.o MutexLock.o EventLoopThread.o EventLoopThreadPool.o CountDownLatch.o Thread.o Channel.o EPoller.o EventLoop.o TimerQueue.o Socket.o InetAddress.o Acceptor.o TcpConnection.o TcpServer.o Buffer.o -lpthread
 
 main.o: main.cc
 	g++ -g -W -c -o main.o main.cc -lpthread

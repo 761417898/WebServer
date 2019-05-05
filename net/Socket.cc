@@ -46,6 +46,9 @@ int Socket::accept(InetAddress *peeraddr) {
     ::memset(&addr, 0, sizeof (addr));
     socklen_t addrlen = static_cast<socklen_t>(sizeof addr);
     //printf("%d fd accept\n", sockfd_);
+    if (sockfd_ == 1031) {
+        printf("wait");
+    }
     int connectFd = ::accept(sockfd_, (sockaddr*)&addr, &addrlen);
     //printf("accepted a new connect fd %d\n", connectFd);
     peeraddr->setSockAddrInet(addr);

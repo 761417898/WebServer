@@ -99,6 +99,7 @@ void TcpConnection::connectDestroyed() {
     loop_->modChannel(channel_.get());
     connectionCallBack_(shared_from_this());
     loop_->delChannel(channel_.get());
+    ::close(channel_->fd());
 }
 
 void TcpConnection::shutdown() {

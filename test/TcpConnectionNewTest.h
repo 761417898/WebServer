@@ -20,6 +20,13 @@ void onMessage(const TcpConnectionPtr& conn, Buffer* buffer) {
     //conn->send(message);
 }
 
+void *closeMainLoopTcpConnection(void *arg) {
+    EventLoop *mainLoop = static_cast<EventLoop*>(arg);
+    ::sleep(120);
+    printf("mainLoop quited\n");
+    mainLoop->quit();
+}
+
 void testTcpConnectionNew() {
     //printf("main(): pid = %d\nNEW TcpConnection Test\n", getpid());
     uint16_t testPort = 8888;
@@ -33,7 +40,10 @@ void testTcpConnectionNew() {
 
     server.start();
 
+    pthread_t tid;
+    pthread_create(&tid, NULL, closeMainLoopTcpConnection, (void*)&loop);
     loop.loop();
+    pthread_join(tid, NULL);
 }
 
 }

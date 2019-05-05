@@ -43,6 +43,7 @@ void TimerQueue::handleRead() {
     auto expiredTimers = getExpired();
     for (auto it = expiredTimers.begin(); it != expiredTimers.end(); ++it) {
         it->second->run();
+        delete it->second;
     }
 }
 

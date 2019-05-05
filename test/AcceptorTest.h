@@ -27,7 +27,7 @@ static void testAcceptorNewConnCallBack(int sockfd, const InetAddress& addr) {
 
 static void* closeMainLoopTestAcceptor(void* arg) {
     EventLoop *mainLoop = static_cast<EventLoop*>(arg);
-    ::sleep(120);
+    ::sleep(60);
     printf("mainLoop quited\n");
     mainLoop->quit();
 }

@@ -38,17 +38,17 @@
      printf("send mes error: %s errno : %d",strerror(errno),errno);
      exit(0);
      }
-     printf("维持连接但不做事\n");
+   //  printf("维持连接但不做事\n");
 
    //  sleep(3);
 
-     char bbuf[65536];
-     int len = read(socketfd, bbuf, sizeof(bbuf));
-     bbuf[len + 1] = '\0';
-     printf("received: %s\n", bbuf);
+   //  char bbuf[65536];
+   //  int len = read(socketfd, bbuf, sizeof(bbuf));
+   //  bbuf[len + 1] = '\0';
+  //   printf("received: %s\n", bbuf);
 
 
-     sleep(30000);
+  //   sleep(30000);
      close(socketfd);
      printf("exit\n");
      exit(0);

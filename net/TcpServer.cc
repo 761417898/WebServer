@@ -17,15 +17,17 @@ TcpServer::~TcpServer() {
 
 void TcpServer::start() {
     acceptor_->listen();
-    threadPool_->setThreadNum(2);
+    threadPool_->setThreadNum(4);
     threadPool_->start();
 }
 
 void TcpServer::removeConnection(const TcpConnectionPtr &conn) {
-    loop_->assertInLoopThread();
-    ssize_t n = connections_.erase(conn->name());
+    //loop_->assertInLoopThread();
+    //if (connections_.find(conn->name()) == connections_.end())
+    //    printf("wait\n");
+    //ssize_t n = connections_.erase(conn->name());
     //printf("\n%s connection_.erase %d\n", conn->name().c_str(), n);
-    assert(n == 1);
+    //assert(n == 1);
     //loop_->queueInLoop()
     /*
      * 　这里把connectionDestroyed加到执行队列里就可以返回了，返回到
@@ -41,6 +43,9 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn) {
     size_t n = connections_.erase(conn->name());
     assert(n == 1);
     EventLoop *ioLoop = conn->getLoop();
+
+    //printf("TcpSerevr::Remove connection %s\n", conn->name().c_str());
+
     ioLoop->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
 }
 
@@ -51,11 +56,10 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     ++nextConnId_;
     std::string connName = name_ + buf;
     //LOG_INFO << "TcpServer::newConnection ..."
-    //printf("TcpServer::newConnection\n");
+    //printf("TcpServer::newConnection %s\n", connName.c_str());
     InetAddress localAddr(Socket::getSockName(sockfd));
 
     EventLoop *ioLoop = threadPool_->getNextLoop();
-    //printf("%s\n", connName.c_str());
     TcpConnectionPtr conn(
                 new TcpConnection(ioLoop, connName, sockfd, localAddr, peerAddr));
     connections_[connName] = conn;
