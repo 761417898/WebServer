@@ -2,7 +2,6 @@
 #include "EventLoop.h"
 #include "EventLoopThread.h"
 
-<<<<<<< HEAD
 using namespace GaoServer;
 
 EventLoopThreadPool::EventLoopThreadPool(EventLoop* baseLoop, const std::string& nameArg)
@@ -79,11 +78,6 @@ std::vector<EventLoop*> EventLoopThreadPool::getAllLoops() {
     } else {
         return loops_;
     }
-=======
-namespace GaoServer {
-    EventLoopThreadPool::EventLoopThreadPool(EventLoop* baseLoop, const string& nameArg)
-        : baseLoop_(baseLoop), name_(nameArg), 
-    {}
->>>>>>> 7ece46e59ca884e366f7d7f4b64021a1b0ac4811
+
 }
 
