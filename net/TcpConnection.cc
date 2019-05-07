@@ -37,11 +37,13 @@ TcpConnection::~TcpConnection() {
 void TcpConnection::handleRead() {
     char buf[65536];
     int savedErrno = 0;
-    ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
+    //ssize_t n = inputBuffer_.readFd(channel_->fd(), &savedErrno);
+    ssize_t n = read(channel_->fd(), buf, sizeof (buf));
     if (n > 0) {
-        messageCallBack_(shared_from_this(), &inputBuffer_);
-        //messageCallBack_(shared_from_this(), buf, n);
+        //messageCallBack_(shared_from_this(), &inputBuffer_);
+        messageCallBack_(shared_from_this(), buf, n);
     } else if (n == 0) {
+        n = read(channel_->fd(), buf, sizeof (buf));
         handleClose();
     } else {
         handleError();
@@ -56,6 +58,7 @@ void TcpConnection::handleClose() {
     setState(kDisConnecting);
     channel_->disableAll();
     loop_->modChannel(channel_.get());
+    printf("This is %s handleclose\n", name().c_str());
     closeCallBack_(shared_from_this());
 }
 
@@ -93,13 +96,16 @@ void TcpConnection::connectEstablish() {
 void TcpConnection::connectDestroyed() {
     //printf("this is TcpConnection::connectDestroyed\n");
     loop_->assertInLoopThread();
+    //if (!(state_ == kConnected || state_ == kDisConnecting))
+    //    return;
     assert(state_ == kConnected || state_ == kDisConnecting);
     setState(kDisConnected);
-    channel_->disableAll();
-    loop_->modChannel(channel_.get());
+   // channel_->disableAll();
+   // loop_->modChannel(channel_.get());
     connectionCallBack_(shared_from_this());
     loop_->delChannel(channel_.get());
     ::close(channel_->fd());
+    printf("%s , socket: %d has been closed and deleted\n", name().c_str(), channel_->fd());
 }
 
 void TcpConnection::shutdown() {

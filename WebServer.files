@@ -34,6 +34,7 @@ net/EventLoopThread.cc
 net/EventLoopThread.h
 net/EventLoopThreadPool.cc
 net/EventLoopThreadPool.h
+net/GaoServerHeaders.h
 net/InetAddress.cc
 net/InetAddress.h
 net/Socket.cc

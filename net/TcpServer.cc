@@ -35,13 +35,22 @@ void TcpServer::removeConnection(const TcpConnectionPtr &conn) {
      *　我们传递的是bind，所以该connection直到connectionDestroyed执行后
      *　才会被析构掉。
      */
-    loop_->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
+    loop_->runInLoop(std::bind(&TcpServer::removeConnectionInLoop, this, conn));
 }
 
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn) {
     loop_->assertInLoopThread();
+
     size_t n = connections_.erase(conn->name());
+
+    if (n != 1) {
+       // printf("conn name = %s\n", conn->name().c_str());
+        printf("error: %s %d\n", conn->name().c_str(), n);
+       // return;
+    }
+
     assert(n == 1);
+    printf("%s %d\n", conn->name().c_str(), n);
     EventLoop *ioLoop = conn->getLoop();
 
     //printf("TcpSerevr::Remove connection %s\n", conn->name().c_str());
@@ -56,7 +65,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     ++nextConnId_;
     std::string connName = name_ + buf;
     //LOG_INFO << "TcpServer::newConnection ..."
-    //printf("TcpServer::newConnection %s\n", connName.c_str());
+    printf("TcpServer::newConnection %s\n", connName.c_str());
     InetAddress localAddr(Socket::getSockName(sockfd));
 
     EventLoop *ioLoop = threadPool_->getNextLoop();

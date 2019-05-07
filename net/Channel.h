@@ -12,6 +12,7 @@
 #include <functional>
 #include <memory>
 #include <poll.h>
+#include "../base/MutexLock.h"
 
 namespace GaoServer {
 
@@ -96,6 +97,8 @@ private:
 	int revents_;
     //防止事件处理期间Channel被析构 
     bool eventHandling_;
+
+    MutexLock mtx_;
 
 	EventCallBack readCallBack_;
 	EventCallBack writeCallBack_;

@@ -8,14 +8,15 @@ const int Channel::kNoneEvent = 0;
 const int Channel::kReadEvent = POLLIN | POLLPRI;
 const int Channel::kWriteEvent = POLLOUT;
 
-Channel::Channel() : events_(0), revents_(0), eventHandling_(false) {}
+Channel::Channel() : events_(0), revents_(0), eventHandling_(false), mtx_() {}
 
 Channel::~Channel() {
     assert(!eventHandling_);
 }
 
 void Channel::handleEvent() {
-    eventHandling_ = true;
+    MutexLockGuard lock(mtx_);
+    //eventHandling_ = true;
 	if (revents_ & POLLNVAL) {
 		//LOG_WARN <<
 	}
@@ -34,7 +35,7 @@ void Channel::handleEvent() {
 	if (revents_ & POLLOUT) {
 		if (writeCallBack_) writeCallBack_();
 	}
-    eventHandling_ = false;
+   // eventHandling_ = false;
 }
 
 }

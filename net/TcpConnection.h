@@ -33,16 +33,18 @@ private:
 
     EventLoop* loop_;
     std::string name_;
+public:
     std::shared_ptr<Socket> socket_;
+private:
     std::shared_ptr<Channel> channel_;
     InetAddress localAddr_;
     InetAddress peerAddr_;
 
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
-    //typedef std::function<void (const TcpConnectionPtr& conn,
-    //                            const char* data, ssize_t len)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr& conn,
-                                Buffer* buffer)> MessageCallBack;
+                                const char* data, ssize_t len)> MessageCallBack;
+    //typedef std::function<void (const TcpConnectionPtr& conn,
+    //                            Buffer* buffer)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr&)> CloseCallBack;
     ConnectionCallBack connectionCallBack_;
     MessageCallBack messageCallBack_;

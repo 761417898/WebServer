@@ -30,9 +30,9 @@ void EventLoopThreadPool::start(const ThreadInitCallback& cb) {
         threads_.push_back(std::unique_ptr<EventLoopThread>(t));
         loops_.push_back(t->startLoop());
     }
-
+    printf("main thread %d\n", CurrentThread::tid());
     for (int i = 0; i < numThreads_; ++i) {
-        //printf("%d tid = %d\n", i, threads_[i]->thread_.tid());
+        printf("%d tid = %d\n", i, threads_[i]->thread_.tid());
     }
 
 

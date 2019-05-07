@@ -15,8 +15,10 @@ class EventLoopThreadPool;
 class TcpServer {
 private:
     typedef std::function<void (const TcpConnectionPtr& conn)> ConnectionCallBack;
+    //typedef std::function<void (const TcpConnectionPtr& conn,
+    //                            Buffer* buffer)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr& conn,
-                                Buffer* buffer)> MessageCallBack;
+                                    const char* data, ssize_t len)> MessageCallBack;
     typedef std::function<void (const TcpConnectionPtr&)> CloseCallBack;
     ConnectionCallBack connectionCallBack_;
     MessageCallBack messageCallBack_;

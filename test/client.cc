@@ -42,10 +42,10 @@
 
    //  sleep(3);
 
-   //  char bbuf[65536];
-   //  int len = read(socketfd, bbuf, sizeof(bbuf));
-   //  bbuf[len + 1] = '\0';
-  //   printf("received: %s\n", bbuf);
+     char bbuf[65536];
+     int len = read(socketfd, bbuf, sizeof(bbuf));
+     bbuf[len + 1] = '\0';
+     printf("received: %s\n", bbuf);
 
 
   //   sleep(30000);

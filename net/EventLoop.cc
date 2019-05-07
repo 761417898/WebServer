@@ -56,9 +56,10 @@ void EventLoop::loop() {
             it != activeChannels_.end(); ++it) {
             if ((*it)->revents_ == 4) {
                 int x = 1;
+                //printf("\n%d fd is actived, handling %d event:\n", (*it)->fd(), (*it)->revents_);
             }
 
-                //printf("\n%d fd is actived, handling %d event:\n", (*it)->fd(), (*it)->revents_);
+            //   printf("\n%d fd is actived, handling %d event:\n", (*it)->fd(), (*it)->revents_);
                 (*it)->handleEvent(); 
         }
         doPendingFunctors();
@@ -109,6 +110,7 @@ void EventLoop::runInLoop(Functor cb) {
         cb();
     } else {
         queueInLoop(std::move(cb));
+        printf("%d This is queue in loop\n", CurrentThread::tid());
     }
 }
 
