@@ -34,7 +34,7 @@ namespace GaoServer {
 	}
 
     void EPoller::poll(std::vector<Channel*>& ret, int timeoutMs) {
-		int nfds = epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeoutMs);
+        int nfds = epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeoutMs);
 
 		for (int idx = 0; idx < nfds; ++idx) {
 			epoll_event ev = events_[idx];

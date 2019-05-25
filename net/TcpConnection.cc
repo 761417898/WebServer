@@ -42,8 +42,9 @@ void TcpConnection::handleRead() {
     if (n > 0) {
         //messageCallBack_(shared_from_this(), &inputBuffer_);
         messageCallBack_(shared_from_this(), buf, n);
+//        printf("%d  This is %s handleread\n", CurrentThread::tid(), name().c_str());
     } else if (n == 0) {
-        n = read(channel_->fd(), buf, sizeof (buf));
+    //    n = read(channel_->fd(), buf, sizeof (buf));
         handleClose();
     } else {
         handleError();
@@ -56,9 +57,10 @@ void TcpConnection::handleClose() {
     loop_->assertInLoopThread();
     assert(state_ == kConnected || state_ == kDisConnecting);
     setState(kDisConnecting);
-    channel_->disableAll();
-    loop_->modChannel(channel_.get());
-    printf("This is %s handleclose\n", name().c_str());
+    //channel_->disableAll();
+    //loop_->modChannel(channel_.get());
+    loop_->delChannel(channel_.get());
+ //   printf("%d  This is %s handleclose\n", CurrentThread::tid(), name().c_str());
     closeCallBack_(shared_from_this());
 }
 
@@ -103,9 +105,9 @@ void TcpConnection::connectDestroyed() {
    // channel_->disableAll();
    // loop_->modChannel(channel_.get());
     connectionCallBack_(shared_from_this());
-    loop_->delChannel(channel_.get());
+    //loop_->delChannel(channel_.get());
     ::close(channel_->fd());
-    printf("%s , socket: %d has been closed and deleted\n", name().c_str(), channel_->fd());
+//    printf("%s , socket: %d has been closed and deleted\n", name().c_str(), channel_->fd());
 }
 
 void TcpConnection::shutdown() {

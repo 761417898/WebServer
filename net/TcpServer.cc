@@ -45,12 +45,12 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn) {
 
     if (n != 1) {
        // printf("conn name = %s\n", conn->name().c_str());
-        printf("error: %s %d\n", conn->name().c_str(), n);
-       // return;
+        printf("%d  error: %s %d\n", CurrentThread::tid(), conn->name().c_str(), n);
+        //return;
     }
 
     assert(n == 1);
-    printf("%s %d\n", conn->name().c_str(), n);
+ //   printf("%d  %s %d\n", CurrentThread::tid(), conn->name().c_str(), n);
     EventLoop *ioLoop = conn->getLoop();
 
     //printf("TcpSerevr::Remove connection %s\n", conn->name().c_str());
@@ -65,7 +65,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
     ++nextConnId_;
     std::string connName = name_ + buf;
     //LOG_INFO << "TcpServer::newConnection ..."
-    printf("TcpServer::newConnection %s\n", connName.c_str());
+//    printf("TcpServer::newConnection %s\n", connName.c_str());
     InetAddress localAddr(Socket::getSockName(sockfd));
 
     EventLoop *ioLoop = threadPool_->getNextLoop();

@@ -45,7 +45,7 @@ void EventLoopThread::threadFunc() {
 
     {
         MutexLockGuard lock(mutex_);
-        loop_ = &loop;
+        loop_ = &loop; //主线程通过loop的地址对其进行访问
         cond_.notify();
     }
 

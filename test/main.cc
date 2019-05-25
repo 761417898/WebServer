@@ -4,7 +4,7 @@
 #include "ThreadTest.h"
 #include "ReactorTest.h"
 #include "AcceptorTest.h"
-#include "TcpConnectionNewTest.h"
+//#include "TcpConnectionNewTest.h"
 #include "LogTest.h"
 #include <pthread.h>
 #include <iostream>
@@ -27,5 +27,5 @@ int main()
     //testAcceptorAllCases();
     //testLogAllCases();
     //printf("test log ok\n");
-    testTcpConnectionNew();
+    //testTcpConnectionNew();
 }

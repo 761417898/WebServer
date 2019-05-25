@@ -110,7 +110,7 @@ void EventLoop::runInLoop(Functor cb) {
         cb();
     } else {
         queueInLoop(std::move(cb));
-        printf("%d This is queue in loop\n", CurrentThread::tid());
+        //printf("%d This is queue in loop\n", CurrentThread::tid());
     }
 }
 

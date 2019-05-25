@@ -156,7 +156,7 @@ void unimplemented(int client)
 
 void *closeMainLoopServer(void *arg) {
     EventLoop *mainLoop = static_cast<EventLoop*>(arg);
-    ::sleep(12000);
+    ::sleep(120);
     printf("mainLoop quited\n");
     mainLoop->quit();
 }

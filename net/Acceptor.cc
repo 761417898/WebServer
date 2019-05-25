@@ -19,7 +19,7 @@ void Acceptor::handleRead() {
     if (connfd > 0) {
         newConnectionCallBack_(connfd, peerAddr);
     } else {
-        //LOG
+        printf("------%d accept fail\n", connfd);
         ::close(connfd);
     }
 }
